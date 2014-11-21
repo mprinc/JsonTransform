@@ -61,7 +61,14 @@ Let observe some examples on the following JSON-object:
     }
 
 #### Preserving structure
-We want to have a way of querying that will let us preserve structure, and information origin. For example:
+We want to have a way of querying that will let us preserve structure, and information origin. 
+
+**HINT**: few great tool for online experimenting with JSONPath are:
+
+* [ashphy.com/JSONPathOnlineEvaluator] (http://ashphy.com/JSONPathOnlineEvaluator/)
+* [jsonpath.curiousconcept.com] (http://jsonpath.curiousconcept.com/)
+
+For example:
 
 executing `$.[data.SimpleStats]..ALL` with 
 
@@ -140,7 +147,10 @@ There are two fundamental issues with this approach:
     	  }
     }
 
+Examples:
 
+* ${.phoneNumbers=>'number'}[?(@.type == 'iPhone')]
+* 
 
 ### Nice to have features?
 
