@@ -17,7 +17,7 @@ Here are some reasons for creationg JsonTransform
 	* triggering side actions on dataflow triggers
 
 ### Scenarios
-Let observe some examples on the following JSON-object:
+Let's observe some examples on the following JSON-object:
 
     {
     "data":{
@@ -70,34 +70,7 @@ We want to have a way of querying that will let us preserve structure, and infor
 
 For example:
 
-executing `$.[data.SimpleStats]..ALL` with 
-
-
-    {
-    "data":{
-    		"SimpleStats":{
-    			"paragraphLengthInWords":{
-    				"ALL":{
-    					"RESULT_ITEMS_COUNT":2700,
-    					"RESULT_HITS_COUNT":272456
-    				}
-    			},
-    			"sentenceLength":{
-    				"ALL":{
-    					"RESULT_ITEMS_COUNT":13039,
-    					"RESULT_HITS_COUNT":272456
-    				}
-    			},
-    			"paragraphLengthInSentences":{
-    				"ALL":{
-    					"RESULT_ITEMS_COUNT":2700,
-    					"RESULT_HITS_COUNT":13039
-    				}
-    			}
-    		}
-    }
-
-JSONPath results with:
+executing `$.[data.SimpleStats]..ALL` with JSONPath results with:
 
     [
     	{
@@ -129,7 +102,8 @@ In essence, the result of the JSON querying against the JSONPath library would b
 There are two fundamental issues with this approach:
 * JSON original schema is destroyed and we cannot just simply filter, or reduce some part of original JSON flow/object without ending up with plain JS array.
 * There is also another inconsistency: JSONPath is not equally treating JS arrays and JS associative arrays (basically object with properties serving as associative keys).
-	* For example if we try to execute `$.store.book[3,4,7]` we would get an array of 3 books (book 3,4, & 7). However if we try similar thing with associative array:  `$.data.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences'].ALL` and to get something like:
+	* For example if we try to execute `$.store.book[3,4,7]` we would get an array of 3 books (book 3,4, & 7). However if we try similar thing with associative array:  
+	* `$.data.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences'].ALL` and to get something like:
 
 
     {
@@ -147,16 +121,113 @@ There are two fundamental issues with this approach:
     	  }
     }
 
-Examples:
+##Examples:
 
-* ${.phoneNumbers=>'number'}[?(@.type == 'iPhone')]
-* 
+### Example 1
+
+`$.data.SimpleStats['sentenceLength'].ALL` will results with:
+
+    	{
+    		"RESULT_ITEMS_COUNT":13039,
+    		"RESULT_HITS_COUNT":272456
+    	}
+Notice that there wouldn't be the list with only one element but just an original object (*$.data.SimpleStats['sentenceLength'].ALL*)
+
+### Example 2
+
+`$.data.SimpleStats..ALL` will results with:
+
+    [
+    	{
+    		"RESULT_ITEMS_COUNT":2700,
+    		"RESULT_HITS_COUNT":272456
+    	},
+    	{
+    		"RESULT_ITEMS_COUNT":13039,
+    		"RESULT_HITS_COUNT":272456
+    	},
+    	{
+    		"RESULT_ITEMS_COUNT":2700,
+    		"RESULT_HITS_COUNT":13039
+    	}
+    ]
+
+### Example 3
+
+`$.data.{SimpleStats..ALL}` will results with:
+
+    {
+        "SimpleStats":{
+            "paragraphLengthInWords":{
+                "ALL":{
+                    "RESULT_ITEMS_COUNT":2700,
+                    "RESULT_HITS_COUNT":272456
+                }
+            },
+            "sentenceLength":{
+                "ALL":{
+                    "RESULT_ITEMS_COUNT":13039,
+                    "RESULT_HITS_COUNT":272456
+                }
+            },
+            "paragraphLengthInSentences":{
+                "ALL":{
+                    "RESULT_ITEMS_COUNT":2700,
+                    "RESULT_HITS_COUNT":13039
+                }
+            }
+        }            
+    }
+
+### Example 4
+
+`$.data.{SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences'].ALL}` will results with:
+
+    {
+        "SimpleStats":{
+            "paragraphLengthInWords":{
+                "ALL":{
+                    "RESULT_ITEMS_COUNT":2700,
+                    "RESULT_HITS_COUNT":272456
+                }
+            },
+            "paragraphLengthInSentences":{
+                "ALL":{
+                    "RESULT_ITEMS_COUNT":2700,
+                    "RESULT_HITS_COUNT":13039
+                }
+            }
+        }            
+    }
 
 ### Nice to have features?
 
 ## Examples
 
 ---
+#### MISSING FEATURES (BUGs)
 
+	// TODO: support for "." inside property name: a['property.with.dots']
+	// TODO: support for successive indexing: a['1st and']['2nd parameter']['in the row']
+	// TODO: fix for indexing property immediately ending up in the result tree: {a}['property'] should not put 'property' in the result tree
+	// TODO: correct support for array (integer) indexing
+	// TODO: add support for logical filtering
+	// TODO: add support for user defined logical filtering funcions
+
+#### FUTURE FEATURES
+
+	// Semantic-modifications: plugin
+	// TODO: add support for renaming part of data-structure
+	// TODO: add support for moving parts of structure
+	// TODO: add support for copying parts of structure
+	// TODO: add support for adding parts of structure
+
+	// Declarative plugin
+	// TODO: add support for declarative modifications through JSON-Schema instead of imperative
+
+	// Declarative cross-schema mapping plugin
+	// TODO: add support for detecting transformations necessary between two JSON-Schemas
+	// TODO: add support for detecting transformations necessary between two JSON object examples
 
 #### COPYRIGHT AND LICENSE
+MIT
