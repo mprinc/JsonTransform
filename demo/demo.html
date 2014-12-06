@@ -1,0 +1,43 @@
+<html lang="en" ng-app="bukvikApp" id="ng-app">
+	<head>
+		<title>JSONTransform - Demo</title>
+		<meta name=”viewport” content=”initial-scale=1.0, width=device-width”>
+		<meta charset="utf-8">
+		<!-- Bootstrap core CSS -->
+	</head>
+	<body>
+		<p>Test JSONTransform</p>
+		<hr/>
+		<div ng-view></div>
+
+		<script src="jquery.js"></script>
+		<script src="../json-transform.js"></script>
+		<script src="demo.js"></script>
+		
+		Expression: <input id="expression" type="text" value="$.{a.aa}[25, 2, 'aab']"/>
+		<button id="btnTransform" title="Transform" name="btnTransform" value="Transform">Transform</button><br/>
+		Dataset: <textarea id="dataset" cols="80" rows="25">
+{
+	"a": {
+		"aa": {
+			"aaa": 2,
+			"aab": "hello"
+		},
+		"ab": {
+			"aba": "world",
+			"abb": 2.05
+		}
+	},
+	"b": {
+		"ba": "not",
+		"bb": "that",
+		"bc": "deep"
+	}
+}
+		</textarea>
+
+		Dataset: <textarea id="datasetTransformed" cols="80" rows="25">
+		</textarea>
+
+	</body>
+</html>

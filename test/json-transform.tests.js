@@ -31,7 +31,7 @@ describe('JSONTransform', function() {
 		});
 	});
 
-	xdescribe('when doing basic access', function() {
+	describe('when doing basic access', function() {
 
 		var transform = JSONTransform.JSONTransform;
 		var obj = {
@@ -170,7 +170,7 @@ describe('JSONTransform', function() {
 		});
 	});
 
-	describe('when keeping object structure (more complex dataset)', function() {
+	xdescribe('when keeping object structure (more complex dataset)', function() {
 
 		var transform = JSONTransform.JSONTransform;
 		var obj = {
@@ -746,7 +746,23 @@ describe('JSONTransform', function() {
 			expect(result.data['corpus-en']['paragraphLengthInWords']['ALL']).to.be.deep.equal(obj.data.stats_results['corpus-en'].SimpleStats.paragraphLengthInWords.ALL);
 		});
 	});
-	// TODO: a['property.with.dots']
-	// TODO: a['1st and']['2nd parameter']['in the row']
-	// TODO: {a}['property'] should not put 'property' in the result tree
+	// TODO: support for "." inside property name: a['property.with.dots']
+	// TODO: support for successive indexing: a['1st and']['2nd parameter']['in the row']
+	// TODO: fix for indexing property immediately ending up in the result tree: {a}['property'] should not put 'property' in the result tree
+	// TODO: correct support for array (integer) indexing
+	// TODO: add support for logical filtering
+	// TODO: add support for user defined logical filtering funcions
+
+	// Semantic-modifications: plugin
+	// TODO: add support for renaming part of data-structure
+	// TODO: add support for moving parts of structure
+	// TODO: add support for copying parts of structure
+	// TODO: add support for adding parts of structure
+
+	// Declarative plugin
+	// TODO: add support for declarative modifications through JSON-Schema instead of imperative
+
+	// Declarative cross-schema mapping plugin
+	// TODO: add support for detecting transformations necessary between two JSON-Schemas
+	// TODO: add support for detecting transformations necessary between two JSON object examples
 });
