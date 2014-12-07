@@ -4,7 +4,7 @@
 It is heavily inspired with  and [XPath](http://www.w3.org/standards/techs/xpath#w3c_all), and its JSON/JS equivalent [JSONPath](http://goessner.net/articles/JsonPath/), but rather acting rather as an interceptor of JSON flow communication with on-the-fly support for filtering and semantic restructuring of underlying JSON dataset
 Surely it can be used on vanilla JSON objects, but that is not of our main interest.
 
-
+Check [JsonTransform in action](http://mprinc.github.io/JsonTransform/).
 
 ## WHY
 Here are some reasons for creationg JsonTransform
