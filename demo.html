@@ -1,0 +1,648 @@
+<html lang="en" ng-app="bukvikApp" id="ng-app">
+	<head>
+		<title>JSONTransform - Demo</title>
+		<meta name=”viewport” content=”initial-scale=1.0, width=device-width”>
+		<meta charset="utf-8">
+		<!-- Bootstrap core CSS -->
+	</head>
+	<body>
+		<p>Test JSONTransform</p>
+		<hr/>
+		<div ng-view></div>
+
+		<link href="json.human.css" rel="stylesheet">		
+		<script src="crel.js"></script>
+		<script src="json.human.js"></script>
+
+		<script src="jquery.js"></script>
+		<script src="json-transform.js"></script>
+		<script src="demo.js"></script>
+
+		<!-- Expression: <input id="expression" type="text" value="$; $.a; a; $.a.aa.aab; $.{a}; $.{a}.ab; $.{a}.aa['aab', 'aaa', 25, 2]"/> -->
+		<!-- Expression: <input id="expression" type="text" value="$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences'].ALL"/> -->
+		<!-- Expression: <input id="expression" type="text" size="200" value="(f)$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']['ALL', 'MIDDLE']"/> -->
+		Expression: <input id="expression" type="text" size="200" value="$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats{['paragraphLengthInWords','paragraphLengthInSentences']}"/>
+		<!-- Expression: <input id="expression" type="text" value="$.{data}['stats.results']['corpus-en', 'Genghis-en'].SimpleStats"/> -->
+		<button id="btnTransform" title="Transform" name="btnTransform" value="Transform">Transform</button><br/>
+		<!-- Dataset: <textarea id="dataset" cols="80" rows="25">
+{
+	"a": {
+		"aa": {
+			"aaa": 2,
+			"aab": "hello"
+		},
+		"ab": {
+			"aba": "world",
+			"abb": 2.05
+		}
+	},
+	"b": {
+		"ba": "not",
+		"bb": "that",
+		"bc": "deep"
+	}
+}
+		</textarea> -->
+		<!-- Dataset: <textarea id="dataset" cols="80" rows="25">
+{
+    "data": {
+		"SimpleStats": {
+			"paragraphLengthInWords": {
+				"MIDDLE": {
+					"RESULT_ITEMS_COUNT": 0,
+					"RESULT_HITS_COUNT": 0
+				},
+				"ALL": {
+					"RESULT_ITEMS_COUNT": 2700,
+					"RESULT_HITS_COUNT": 272456
+				}
+			},
+			"sentenceLength": {
+				"MIDDLE": {
+					"RESULT_ITEMS_COUNT": 4241,
+					"RESULT_HITS_COUNT": 87332
+				},
+				"ALL": {
+					"RESULT_ITEMS_COUNT": 13039,
+					"RESULT_HITS_COUNT": 272456
+				}
+			},
+			"paragraphLengthInSentences": {
+				"MIDDLE": {
+					"RESULT_ITEMS_COUNT": 0,
+					"RESULT_HITS_COUNT": 0
+				},
+				"ALL": {
+					"RESULT_ITEMS_COUNT": 2700,
+					"RESULT_HITS_COUNT": 13039
+				}
+			}
+		}
+	},
+	"params": {
+		"fileOut.type": "html",
+		"fileOut.name": "uppsala/lolita-en - stats results.html"
+	}
+}
+		</textarea> -->
+		Dataset: <textarea id="dataset" cols="80" rows="25">
+{
+    "dataParams":{
+        "type":"bukvik.structure.word.Distribution",
+        "structure":"array",
+        "schema":{
+            "$schema":"http://json-schema.org/schema#",
+            "type":"object",
+            "properties":{
+                "content":{
+                    "type":"object",
+                    "properties":{
+                        "type":"array",
+                        "properties":{
+                            "type":"array",
+                            "properties":[
+                                {
+                                    "type":"string"
+                                },
+                                {
+                                    "type":"number"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "iAmId":{
+                    "type":"number"
+                },
+                "name":{
+                    "type":"string"
+                }
+            }
+        }
+    },
+    "data":{
+        "stats.results":{
+            "WhiteDog-en":{
+                "SimpleStats":{
+                    "paragraphLengthInWords":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":11,
+                            "RESULT_HITS_COUNT":94736
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        }
+                    },
+                    "sentenceLength":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":2200,
+                            "RESULT_HITS_COUNT":30781
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":6595,
+                            "RESULT_HITS_COUNT":94736
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":2202,
+                            "RESULT_HITS_COUNT":30633
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":2193,
+                            "RESULT_HITS_COUNT":33322
+                        }
+                    },
+                    "paragraphLengthInSentences":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":11,
+                            "RESULT_HITS_COUNT":6595
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        }
+                    }
+                }
+            },
+            "Genghis-en":{
+                "SimpleStats":{
+                    "paragraphLengthInWords":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":10,
+                            "RESULT_HITS_COUNT":79418
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        }
+                    },
+                    "sentenceLength":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":2220,
+                            "RESULT_HITS_COUNT":25269
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":6658,
+                            "RESULT_HITS_COUNT":79418
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":2222,
+                            "RESULT_HITS_COUNT":25148
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":2216,
+                            "RESULT_HITS_COUNT":29001
+                        }
+                    },
+                    "paragraphLengthInSentences":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":10,
+                            "RESULT_HITS_COUNT":6658
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        }
+                    }
+                }
+            },
+            "corpus-en":{
+                "SimpleStats":{
+                    "paragraphLengthInWords":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":1,
+                            "RESULT_HITS_COUNT":548664
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        }
+                    },
+                    "sentenceLength":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":10095,
+                            "RESULT_HITS_COUNT":151153
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":30284,
+                            "RESULT_HITS_COUNT":548664
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":10095,
+                            "RESULT_HITS_COUNT":162544
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":10094,
+                            "RESULT_HITS_COUNT":234967
+                        }
+                    },
+                    "paragraphLengthInSentences":{
+                        "MIDDLE":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "ALL":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":1,
+                            "RESULT_HITS_COUNT":30284
+                        },
+                        "END":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        },
+                        "BEGIN":{
+                            "RESULT_EXAMPLES":[],
+                            "RESULT_ITEMS_COUNT":0,
+                            "RESULT_HITS_COUNT":0
+                        }
+                    }
+                }
+            }
+        },
+        "pos.distribution":{
+            "WhiteDog-en":{
+                "1":[
+                    [
+                        "noun",
+                        16683,
+                        0.17609989866576592
+                    ],
+                    [
+                        "prep",
+                        9210,
+                        0.0972175308224962
+                    ],
+                    [
+                        "det",
+                        8156,
+                        0.08609187637223442
+                    ],
+                    [
+                        "pun",
+                        7126,
+                        0.07521955750717785
+                    ],
+                    [
+                        "adj",
+                        6927,
+                        0.07311898327985138
+                    ],
+                    [
+                        "sent",
+                        6591,
+                        0.06957228508697855
+                    ],
+                    [
+                        "pron",
+                        6011,
+                        0.0634500084445195
+                    ],
+                    [
+                        "vbpres",
+                        4924,
+                        0.051976017564600574
+                    ],
+                    [
+                        "adv",
+                        4899,
+                        0.05171212633001182
+                    ],
+                    [
+                        "name",
+                        3757,
+                        0.039657574733997634
+                    ],
+                    [
+                        "vbinf",
+                        2816,
+                        0.029724708664077015
+                    ],
+                    [
+                        "conj",
+                        2753,
+                        0.02905970275291336
+                    ]
+                ],
+                "2":[
+                    [
+                        "det,noun",
+                        4511,
+                        0.04761703699794163
+                    ],
+                    [
+                        "noun,prep",
+                        3709,
+                        0.039151316831160604
+                    ],
+                    [
+                        "adj,noun",
+                        3701,
+                        0.03906687074470892
+                    ],
+                    [
+                        "noun,pun",
+                        3241,
+                        0.03421122077373727
+                    ],
+                    [
+                        "prep,det",
+                        3177,
+                        0.03353565208212382
+                    ],
+                    [
+                        "noun,sent",
+                        2666,
+                        0.028141658310022695
+                    ],
+                    [
+                        "det,adj",
+                        2305,
+                        0.02433102865889059
+                    ],
+                    [
+                        "pron,vbpres",
+                        2209,
+                        0.023317675621470416
+                    ]
+                 ]
+            },
+            "Genghis-en":{
+                "1":[
+                    [
+                        "noun",
+                        12124,
+                        0.15266060590798056
+                    ],
+                    [
+                        "prep",
+                        6780,
+                        0.0853710745674784
+                    ],
+                    [
+                        "sent",
+                        6648,
+                        0.08370898285023547
+                    ],
+                    [
+                        "pron",
+                        6086,
+                        0.07663250144803445
+                    ],
+                    [
+                        "det",
+                        5993,
+                        0.07546148228361328
+                    ],
+                    [
+                        "pun",
+                        5856,
+                        0.07373643254677781
+                    ],
+                    [
+                        "adj",
+                        5424,
+                        0.06829685965398273
+                    ],
+                    [
+                        "vbpres",
+                        4927,
+                        0.062038832506484676
+                    ],
+                    [
+                        "adv",
+                        4697,
+                        0.059142763605228035
+                    ],
+                    [
+                        "name",
+                        3693,
+                        0.046500793271046864
+                    ],
+                    [
+                        "vbinf",
+                        2725,
+                        0.034312120677931955
+                    ],
+                    [
+                        "conj",
+                        1829,
+                        0.023030043566949557
+                    ]
+                ],
+                "2":[
+                    [
+                        "det,noun",
+                        3222,
+                        0.04057065867509475
+                    ],
+                    [
+                        "adj,noun",
+                        2555,
+                        0.032171953108276564
+                    ],
+                    [
+                        "noun,sent",
+                        2508,
+                        0.0315801402722339
+                    ],
+                    [
+                        "noun,pun",
+                        2459,
+                        0.03096314391125326
+                    ],
+                    [
+                        "noun,prep",
+                        2374,
+                        0.02989284410138887
+                    ],
+                    [
+                        "pron,vbpres",
+                        2297,
+                        0.028923278391276428
+                    ],
+                    [
+                        "prep,det",
+                        2126,
+                        0.02677008700907866
+                    ]
+                ]
+            },
+            "corpus-en":{
+                "1":[
+                    [
+                        "noun",
+                        92183,
+                        0.16801357479258708
+                    ],
+                    [
+                        "prep",
+                        54152,
+                        0.09869792805797355
+                    ],
+                    [
+                        "det",
+                        48000,
+                        0.08748523686627882
+                    ],
+                    [
+                        "pun",
+                        36572,
+                        0.06665646005569893
+                    ],
+                    [
+                        "adj",
+                        34464,
+                        0.06281440006998819
+                    ],
+                    [
+                        "pron",
+                        30337,
+                        0.05529249230858959
+                    ],
+                    [
+                        "sent",
+                        30284,
+                        0.055195894026216406
+                    ],
+                    [
+                        "vbpast",
+                        29564,
+                        0.05388361547322223
+                    ]
+                ],
+                "2":[
+                    [
+                        "det,noun",
+                        28605,
+                        0.05213582836823332
+                    ],
+                    [
+                        "noun,prep",
+                        21939,
+                        0.039986293954576854
+                    ],
+                    [
+                        "prep,det",
+                        20756,
+                        0.03783014345782384
+                    ],
+                    [
+                        "adj,noun",
+                        19727,
+                        0.0359546752742576
+                    ],
+                    [
+                        "noun,pun",
+                        14503,
+                        0.026433347974986466
+                    ],
+                    [
+                        "noun,sent",
+                        12375,
+                        0.022554828738223644
+                    ],
+                    [
+                        "pron,vbpast",
+                        11787,
+                        0.021483132633328655
+                    ],
+                    [
+                        "det,adj",
+                        11714,
+                        0.021350081926428427
+                    ],
+                    [
+                        "prep,noun",
+                        8404,
+                        0.01531723480533588
+                    ],
+                    [
+                        "quotes,quotes",
+                        8392,
+                        0.015295363456256391
+                    ]
+                ]
+            }
+        }
+    }
+}
+</textarea>
+		Dataset: <textarea id="datasetTransformed" cols="80" rows="25">
+		</textarea>
+		<div id="datasetTransformedHtml"></div>
+	</body>
+</html>
