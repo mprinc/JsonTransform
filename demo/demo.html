@@ -10,13 +10,18 @@
 		<hr/>
 		<div ng-view></div>
 
+		<link href="json.human.css" rel="stylesheet">		
+		<script src="crel.js"></script>
+		<script src="json.human.js"></script>
+
 		<script src="jquery.js"></script>
 		<script src="../json-transform.js"></script>
 		<script src="demo.js"></script>
 
 		<!-- Expression: <input id="expression" type="text" value="$; $.a; a; $.a.aa.aab; $.{a}; $.{a}.ab; $.{a}.aa['aab', 'aaa', 25, 2]"/> -->
 		<!-- Expression: <input id="expression" type="text" value="$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences'].ALL"/> -->
-		Expression: <input id="expression" type="text" size="200" value="(f)$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']['ALL', 'MIDDLE']"/>
+		<!-- Expression: <input id="expression" type="text" size="200" value="(f)$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']['ALL', 'MIDDLE']"/> -->
+		Expression: <input id="expression" type="text" size="200" value="$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats{['paragraphLengthInWords','paragraphLengthInSentences']}"/>
 		<!-- Expression: <input id="expression" type="text" value="$.{data}['stats.results']['corpus-en', 'Genghis-en'].SimpleStats"/> -->
 		<button id="btnTransform" title="Transform" name="btnTransform" value="Transform">Transform</button><br/>
 		<!-- Dataset: <textarea id="dataset" cols="80" rows="25">
@@ -38,7 +43,7 @@
 	}
 }
 		</textarea> -->
-		Dataset: <textarea id="dataset" cols="80" rows="25">
+		<!-- Dataset: <textarea id="dataset" cols="80" rows="25">
 {
     "data": {
 		"SimpleStats": {
@@ -79,8 +84,8 @@
 		"fileOut.name": "uppsala/lolita-en - stats results.html"
 	}
 }
-		</textarea>
-		<!-- Dataset: <textarea id="dataset" cols="80" rows="25">
+		</textarea> -->
+		Dataset: <textarea id="dataset" cols="80" rows="25">
 {
     "dataParams":{
         "type":"bukvik.structure.word.Distribution",
@@ -635,9 +640,9 @@
         }
     }
 }
-</textarea> -->
+</textarea>
 		Dataset: <textarea id="datasetTransformed" cols="80" rows="25">
 		</textarea>
-
+		<div id="datasetTransformedHtml"></div>
 	</body>
 </html>

@@ -12,7 +12,9 @@ function transform(){
 	console.log("dataset: %s", JSON.stringify(dataset));
 	// var datasetTransformed = dataset;
 	var datasetTransformed = JSONTransform(dataset, expression);
-	$("#datasetTransformed").val(JSON.stringify(datasetTransformed));	
+	$("#datasetTransformed").val(JSON.stringify(datasetTransformed));
+	var node = JsonHuman.format(datasetTransformed);
+	$('#datasetTransformedHtml').html(node);
 };
 
 $(document).ready(function(){

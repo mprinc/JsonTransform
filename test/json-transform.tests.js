@@ -883,6 +883,24 @@ describe('JSONTransform', function() {
 			expect(result.data['corpus-en']['paragraphLengthInWords']['ALL']).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats.paragraphLengthInWords.ALL);
 			expect(result.data['corpus-en']['paragraphLengthInSentences']['ALL']).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats.paragraphLengthInSentences.ALL);
 		});
+		it("should get array of two sub-objects when provided with successive index selections (more complex example): \"$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats{['paragraphLengthInWords','paragraphLengthInSentences']}.ALL\"", function() {
+			var result = transform(obj, "$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats{['paragraphLengthInWords','paragraphLengthInSentences']}.ALL");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('stats.results');
+			expect(result.data).to.have.property('corpus-en');
+			expect(result.data).to.have.property('Genghis-en');
+			expect(result.data).to.not.have.property('WhiteDog-en');
+			expect(result.data['corpus-en']).to.not.have.property('SimpleStats');
+			expect(result.data['corpus-en']).to.have.property('paragraphLengthInWords');
+			expect(result.data['corpus-en']).to.have.property('paragraphLengthInSentences');
+			expect(result.data['corpus-en']).to.not.have.property('sentenceLength');
+			expect(result.data['corpus-en']['paragraphLengthInWords']).to.have.property('RESULT_HITS_COUNT');
+			expect(result.data['corpus-en']['paragraphLengthInWords']).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data['corpus-en']['paragraphLengthInSentences']).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats.paragraphLengthInSentences.ALL);
+		});
+		
 	});
 
 	// TODO: add support for logical filtering
