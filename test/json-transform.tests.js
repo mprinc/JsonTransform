@@ -4,11 +4,12 @@ var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 // testing:
+// cd ~/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/
 // node node_modules/mocha/bin/mocha test/json-transform.tests.js
 
 describe('JSONTransform', function() {
 
-	xdescribe('when doing empty access', function() {
+	describe('when doing empty access', function() {
 
 		var transform = JSONTransform.JSONTransform;
 		var obj = {
@@ -73,7 +74,7 @@ describe('JSONTransform', function() {
 		});
 	});
 
-	xdescribe('when keeping object structure', function() {
+	describe('when keeping object structure', function() {
 
 		var transform = JSONTransform.JSONTransform;
 		var obj = {
@@ -113,7 +114,7 @@ describe('JSONTransform', function() {
 		});
 	});
 
-	xdescribe('when keeping object structure', function() {
+	describe('when keeping object structure', function() {
 
 		var transform = JSONTransform.JSONTransform;
 		var obj = {
@@ -163,14 +164,51 @@ describe('JSONTransform', function() {
 			expect(result).to.have.property('data');
 			expect(result).to.not.have.property('params');
 			expect(result.data).to.not.have.property('SimpleStats');
+			expect(result.data).to.not.have.property('paragraphLengthInWords');
+			expect(result.data).to.not.have.property('paragraphLengthInSentences');
+			expect(result.data).to.not.have.property('sentenceLength');
+			expect(result.data).to.have.length(2);
+			expect(result.data[0]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data[1]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.ALL);
+		});
+		it('should get sub-object when provided property name: "$.{data}.SimpleStats{[\'paragraphLengthInWords\', \'paragraphLengthInSentences\']}.ALL"', function() {
+			var result = transform(obj, "$.{data}.SimpleStats{['paragraphLengthInWords', 'paragraphLengthInSentences']}.ALL");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('SimpleStats');
 			expect(result.data).to.have.property('paragraphLengthInWords');
 			expect(result.data).to.have.property('paragraphLengthInSentences');
 			expect(result.data).to.not.have.property('sentenceLength');
 			expect(result.data.paragraphLengthInWords).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
 		});
+		it('should get sub-object when provided property name: "$.{data}.SimpleStats{[\'paragraphLengthInWords\', \'paragraphLengthInSentences\']}.ALL"', function() {
+			var result = transform(obj, "$.{data}.SimpleStats{['paragraphLengthInWords', 'paragraphLengthInSentences'].ALL}");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('SimpleStats');
+			expect(result.data).to.have.property('paragraphLengthInWords');
+			expect(result.data).to.have.property('paragraphLengthInSentences');
+			expect(result.data).to.not.have.property('sentenceLength');
+			expect(result.data.paragraphLengthInWords).to.have.property('ALL');
+			expect(result.data.paragraphLengthInWords.ALL).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+		});
+		xit('should get sub-object when provided property name: "$.{data}.SimpleStats{[\'paragraphLengthInWords\', \'paragraphLengthInSentences\']}.ALL"', function() {
+			var result = transform(obj, "$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences'].{ALL}");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('SimpleStats');
+			expect(result.data).to.not.have.property('paragraphLengthInWords');
+			expect(result.data).to.not.have.property('paragraphLengthInSentences');
+			expect(result.data).to.not.have.property('sentenceLength');
+			expect(result.data).to.have.property('ALL');
+			expect(result.data.paragraphLengthInWords.ALL).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+		});
 	});
 
-	xdescribe('when keeping object structure (more complex dataset)', function() {
+	describe('when keeping object structure (more complex dataset)', function() {
 
 		var transform = JSONTransform.JSONTransform;
 		var obj = {
@@ -208,7 +246,7 @@ describe('JSONTransform', function() {
 		        }
 		    },
 		    "data":{
-		        "stats_results":{
+		        "stats.results":{
 		            "WhiteDog-en":{
 		                "SimpleStats":{
 		                    "paragraphLengthInWords":{
@@ -728,12 +766,31 @@ describe('JSONTransform', function() {
 		    }
 		};
 
-		it('should get sub-object when provided property name: "$.{data}.[\'stats_results\'][\'corpus-en\', \'Genghis-en\'].SimpleStats"', function() {
-			var result = transform(obj, "$.{data}.['stats_results']['corpus-en', 'Genghis-en'].SimpleStats");
+		it('should get sub-object when provided property name: "$.{data}[\'stats.results\'][\'corpus-en\', \'Genghis-en\'].SimpleStats"', function() {
+			var result = transform(obj, "$.{data}['stats.results']['corpus-en', 'Genghis-en'].SimpleStats");
 			console.log("[test] result: %s", JSON.stringify(result));
 			expect(result).to.have.property('data');
 			expect(result).to.not.have.property('params');
-			expect(result.data).to.not.have.property('stats_results');
+			expect(result.data).to.not.have.property('stats.results');
+			expect(result.data).to.not.have.property('corpus-en');
+			expect(result.data).to.not.have.property('Genghis-en');
+			expect(result.data).to.not.have.property('WhiteDog-en');
+			expect(result.data).to.not.have.property('SimpleStats');
+			expect(result.data).to.have.length(2);
+			expect(result.data[0]).to.have.property('paragraphLengthInWords');
+			expect(result.data[0].paragraphLengthInSentences).to.have.property('ALL');
+			expect(result.data[0].paragraphLengthInSentences.ALL).to.have.property('RESULT_HITS_COUNT');
+			expect(result.data[0]).to.have.property('sentenceLength');
+			expect(result.data[0]).to.have.property('paragraphLengthInWords');
+			expect(result.data[0]).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats);
+  			expect(result.data[1]).to.be.deep.equal(obj.data['stats.results']['Genghis-en'].SimpleStats);
+		});
+		it('should get sub-object when provided property name: "$.{data}[\'stats.results\'][\'corpus-en\', \'Genghis-en\'].SimpleStats"', function() {
+			var result = transform(obj, "$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('stats.results');
 			expect(result.data).to.have.property('corpus-en');
 			expect(result.data).to.have.property('Genghis-en');
 			expect(result.data).to.not.have.property('WhiteDog-en');
@@ -743,13 +800,14 @@ describe('JSONTransform', function() {
 			expect(result.data['corpus-en']).to.have.property('sentenceLength');
 			expect(result.data['corpus-en']['sentenceLength']).to.have.property('ALL');
 			expect(result.data['corpus-en']['sentenceLength']['ALL']).to.have.property('RESULT_HITS_COUNT');
-			expect(result.data['corpus-en']['paragraphLengthInWords']['ALL']).to.be.deep.equal(obj.data.stats_results['corpus-en'].SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data['corpus-en']['paragraphLengthInWords']['ALL']).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats.paragraphLengthInWords.ALL);
 		});
 	});
 	// TODO: support for "." inside property name: a['property.with.dots']
 	// TODO: support for successive indexing: a['1st and']['2nd parameter']['in the row']
 	// TODO: fix for indexing property immediately ending up in the result tree: {a}['property'] should not put 'property' in the result tree
 	// TODO: correct support for array (integer) indexing
+
 	// TODO: add support for logical filtering
 	// TODO: add support for user defined logical filtering funcions
 

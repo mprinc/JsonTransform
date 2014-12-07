@@ -29,9 +29,9 @@ function JSONTransform(objOriginal, expressionsStr, options) {
 		console.log("[JSONTransform] expr: %s", expr);
 		var resultPartial = processExpressionTree(objOriginal, expressionTree);
 		
-		var exprList = expr.split(".");
-		if(exprList.length > 0 && exprList[0] == "$") exprList.shift();
-		resultPartial = processExpression(objOriginal, exprList);
+//		var exprList = expr.split(".");
+//		if(exprList.length > 0 && exprList[0] == "$") exprList.shift();
+//		resultPartial = processExpression(objOriginal, exprList);
 		console.log("[JSONTransform] resultPartial: %s", JSON.stringify(resultPartial));
 		resultsPartial.push(resultPartial);
 
@@ -321,7 +321,9 @@ function parseExpressions(expressionsStr){
  */
 function parsePrintExpressionTree(expressionTree){
 	var treeStr = "";
-	var tabs = "\t";
+	var options = {
+			tabs: "\t"
+		};
 
 	var currentState = expressionTree.$innerStates.startState;
 	currentState.visited = false;
@@ -329,27 +331,11 @@ function parsePrintExpressionTree(expressionTree){
 	if(currentState.nextState) currentState.nextState.visited = false;
 	while(currentState){
 		if(!currentState.visited){
-			treeStr += tabs + "type: "+parseTypeToStr(currentState.type) + ", value: "+JSON.stringify(currentState.value) + "\n";
+			treeStr += options.tabs + "type: "+parseTypeToStr(currentState.type) + ", value: "+JSON.stringify(currentState.value) + "\n";
 		}
 		currentState.visited = true;
-
-		if(currentState.childState && !currentState.childState.visited){
-			currentState = currentState.childState;
-			if(currentState.childState) currentState.childState.visited = false;
-			if(currentState.nextState) currentState.nextState.visited = false;
-			tabs += "\t";
-			continue;
-		}else if(currentState.nextState){
-			currentState = currentState.nextState;
-			if(currentState.childState) currentState.childState.visited = false;
-			if(currentState.nextState) currentState.nextState.visited = false;
-			continue;
-		}else if(currentState.parentState){
-			currentState = currentState.parentState;
-			tabs = tabs.substring(0, tabs.length-1);
-		}else{
-			currentState = null;
-		}
+		
+		currentState = nextStateInExpressionTree(expressionTree, currentState, options);
 	}
 	return treeStr;
 }
@@ -562,10 +548,53 @@ function isKeepPath(currentState){
  * @param {Tree} expression tree
  * @returns processed object
  */
+function nextStateInExpressionTree(expressionTree, currentState, options){
+	if(currentState.childState && !currentState.childState.visited){
+		currentState = currentState.childState;
+		if(currentState.childState) currentState.childState.visited = false;
+		if(currentState.nextState) currentState.nextState.visited = false;
+		if(options){
+			options.tabs += "\t";
+		}
+	}else if(currentState.nextState){
+		currentState = currentState.nextState;
+		if(currentState.childState) currentState.childState.visited = false;
+		if(currentState.nextState) currentState.nextState.visited = false;
+	}else if(currentState.parentState){
+		// do not return on the parent state but the next one to the parent of grandparent (if the parent doesn't have next), etc, so bubbling-up
+		do{
+			currentState = currentState.parentState;
+			if(options){
+				options.tabs = options.tabs.substring(0, options.tabs.length-1);
+			}
+		}while(currentState && !currentState.nextState);
+
+		if(currentState && currentState.nextState){
+			currentState = currentState.nextState;		
+			if(currentState.childState) currentState.childState.visited = false;
+			if(currentState.nextState) currentState.nextState.visited = false;
+		}
+	}else{
+		currentState = null;
+	}
+	return currentState;
+}
+
+/**
+ * @ngdoc object
+ * @name parsePrintExpressionTree
+ * @function
+ *
+ * @description
+ * Processes object according to the expression tree. Most of the time it navigates through the object structure and extracts particular part of object and gives it as a result,
+ * but very often original path of the object structure is preserved
+ * @param {Object} object to be processed
+ * @param {Tree} expression tree
+ * @returns processed object
+ */
 function processExpressionTree(objOriginal, expressionTree, currentState){
 	console.log("[JSONTransform:processExpressionTree] expressionTree: \n%s, objOriginal: %s", parsePrintExpressionTree(expressionTree), JSON.stringify(objOriginal));
 
-	var tabs = "\t";
 	var result = {};
 	var resultPath = result;
 	var obj = objOriginal;
@@ -580,7 +609,8 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 	if(currentState.childState) currentState.childState.visited = false;
 	if(currentState.nextState) currentState.nextState.visited = false;
 	var lastPropertyName = null;
-	while(currentState){
+	var leaveTheLoop = false;
+	while(currentState && !leaveTheLoop){
 		if(!currentState.visited){
 			currentState.visited = true;
 
@@ -611,7 +641,7 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 				
 				for(var i in currentState.value){
 					var selector = currentState.value[i];
-					var subState = currentState.nextState;
+					var subState = nextStateInExpressionTree(expressionTree, currentState);
 					var res = processExpressionTree(obj[selector.value], expressionTree, subState);
 					if(results){
 						results.push(res);
@@ -621,7 +651,7 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 				}
 				if(results){
 					if(results.length == 1){
-						obj = result[0];
+						obj = results[0];
 					}else if(results.length == 0){
 						obj = null;
 					}else{
@@ -631,27 +661,11 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 				if(resultsNamed){
 					obj = resultsNamed;
 				}
+				leaveTheLoop = true;
 				break;
 			}
 		}
-
-		if(currentState.childState && !currentState.childState.visited){
-			currentState = currentState.childState;
-			if(currentState.childState) currentState.childState.visited = false;
-			if(currentState.nextState) currentState.nextState.visited = false;
-			tabs += "\t";
-			continue;
-		}else if(currentState.nextState){
-			currentState = currentState.nextState;
-			if(currentState.childState) currentState.childState.visited = false;
-			if(currentState.nextState) currentState.nextState.visited = false;
-			continue;
-		}else if(currentState.parentState){
-			currentState = currentState.parentState;
-			tabs = tabs.substring(0, tabs.length-1);
-		}else{
-			currentState = null;
-		}
+		currentState = nextStateInExpressionTree(expressionTree, currentState);
 	}
 	if(lastPropertyName){
 		resultPath[lastPropertyName] = obj;
@@ -771,4 +785,4 @@ function processExpression(objOriginal, exprList, lastPropertyName, keepPath, de
 function processExpressionPart(objOriginal, expression, resultForExpression){
 };
 
-// module && module.exports && (module.exports.JSONTransform = JSONTransform);
+typeof module !== 'undefined' && module.exports && (module.exports.JSONTransform = JSONTransform);
