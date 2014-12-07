@@ -13,8 +13,8 @@
 		<script src="jquery.js"></script>
 		<script src="../json-transform.js"></script>
 		<script src="demo.js"></script>
-		
-		Expression: <input id="expression" type="text" value="$.{a.aa}[25, 2, 'aab']"/>
+
+		Expression: <input id="expression" type="text" value="$; $.a; a; $.a.aa.aab; $.{a}; $.{a}.ab; $.{a}.aa['aab', 'aaa', 25, 2]"/>
 		<button id="btnTransform" title="Transform" name="btnTransform" value="Transform">Transform</button><br/>
 		Dataset: <textarea id="dataset" cols="80" rows="25">
 {

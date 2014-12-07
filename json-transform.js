@@ -22,12 +22,16 @@ function JSONTransform(objOriginal, expressionsStr, options) {
 	// TODO: we need to review this decision
 	var resultsNo = 0;
 	console.log("[JSONTransform] expressions: %s", JSON.stringify(expressions));
-	parseExpressions(expressionsStr);
 	for(var id in expressions){
 		var expr = expressions[id].trim();
+		
+		var expressionTree = parseExpressions(expr);
+		console.log("[JSONTransform] expr: %s", expr);
+		var resultPartial = processExpressionTree(objOriginal, expressionTree);
+		
 		var exprList = expr.split(".");
 		if(exprList.length > 0 && exprList[0] == "$") exprList.shift();
-		var resultPartial = processExpression(objOriginal, exprList);
+		resultPartial = processExpression(objOriginal, exprList);
 		console.log("[JSONTransform] resultPartial: %s", JSON.stringify(resultPartial));
 		resultsPartial.push(resultPartial);
 
@@ -128,7 +132,7 @@ var TYPE_UNKNOWN = -1;
 var TYPE_START = 0;
 var TYPE_PROPERTY = 1;
 var TYPE_INDEX = 2;
-var TYPE_KEEP_PATH_ENTERING = 3;
+var TYPE_KEEP_PATH = 3;
 // not necessary, TYPE_KEEP_PATH_LEAVING is only for parseInitNewState() to not put new state but come back to the existing one
 // TODO: this is necessary to be fixed
 var TYPE_KEEP_PATH_LEAVING = 4;
@@ -169,9 +173,9 @@ function parseExpressions(expressionsStr){
 		}
 	};
 	var c = null;
-	var it = 25;
+	var it = 1000;
 	while(c = stepForward(expressionTree)){
-		console.log("[parseExpressions] c: %s, expressionTree: \n%s", c, parsePrintExpressionTree(expressionTree));
+		//console.log("[parseExpressions] c: %s, expressionTree: \n%s", c, parsePrintExpressionTree(expressionTree));
 		if(!it--) break;
 		var currentState = expressionTree.$innerStates.currentState;
 		var currentType = currentState.type;
@@ -179,14 +183,15 @@ function parseExpressions(expressionsStr){
 		case TYPE_START:
 			if(c == '$'){
 				c = stepForward(expressionTree);
+				if(!c) break;
 				if(c != "."){
-					parsingError(i, "After the starting '$' next character has to be '.'", expressionTree);
+					parsingError("After the starting '$' next character has to be '.'", expressionTree);
 				}
 			}else{
 				stepBackward(expressionTree);
 				var newState = parseDetectNewStateType(expressionTree);
 				parseInitNewState(expressionTree, newState);
-				c = stepForward(expressionTree);
+				//c = stepForward(expressionTree);
 			}
 			break;
 		case TYPE_PROPERTY:
@@ -201,7 +206,7 @@ function parseExpressions(expressionsStr){
 				var nextState = parseDetectNewStateType(expressionTree);
 				parseInitNewState(expressionTree, nextState);
 				// we want to skip the special character
-				c = stepForward(expressionTree);
+				//c = stepForward(expressionTree);
 			}
 			break;
 		case TYPE_INDEX:
@@ -259,7 +264,7 @@ function parseExpressions(expressionsStr){
 					}
 					break;
 				case INDEX_SELECTOR_TYPE_NUMBER:
-					if(CHAR_SPACE.indexOf(c) >= 0 || CHAR_INDEX_SEPARATOR == c){
+					if(CHAR_SPACE.indexOf(c) >= 0 || CHAR_INDEX_SEPARATOR == c || CHAR_INDEX_END == c){
 						currentState.value.push(currentState.$innerStates.processingSelector);
 						currentState.$innerStates.processingState = STATE_INDEX_EXPECTING_SELECTOR_SEPARATOR;
 						stepBackward(expressionTree);
@@ -274,24 +279,22 @@ function parseExpressions(expressionsStr){
 			}
 
 			break;
-		case TYPE_KEEP_PATH_ENTERING:
+		case TYPE_KEEP_PATH:
 			if(currentState.$innerStates.processingState == STATE_STARTING){
 				currentState.$innerStates.processingState = STATE_KEEP_PATH_ENTERING;
 			}
 			switch(currentState.$innerStates.processingState){
 			case STATE_KEEP_PATH_ENTERING:
 				currentState.$innerStates.processingState = STATE_KEEP_PATH_LEAVING;
-				// we want get back to the observed character
-				c = stepBackward(expressionTree);
 				var nextState = parseDetectNewStateType(expressionTree);
 				parseInitNewState(expressionTree, nextState, 2);
 
 				break;
 			case STATE_KEEP_PATH_LEAVING:
-				// we want get back to the observed character
-				c = stepBackward(expressionTree);
 				var nextState = parseDetectNewStateType(expressionTree);
 				parseInitNewState(expressionTree, nextState);
+				// we want to skip the special character
+				//c = stepForward(expressionTree);
 				break;
 			}
 			break;
@@ -302,7 +305,8 @@ function parseExpressions(expressionsStr){
 		}
 	}
 	console.log("[parseExpressions]expressionTree: \n%s", parsePrintExpressionTree(expressionTree));
-	return  expressionsTree;
+	return expressionTree;
+	//return  expressionsTree;
 }
 
 /**
@@ -375,7 +379,7 @@ function parseTypeToStr(type){
 	case TYPE_INDEX:
 		typeStr = "INDEX";
 		break;
-	case TYPE_KEEP_PATH_ENTERING:
+	case TYPE_KEEP_PATH:
 		typeStr = "KEEP_PATH_ENTERING";
 		break;
 	case TYPE_KEEP_PATH_LEAVING:
@@ -404,20 +408,21 @@ function parseDetectNewStateType(expressionTree){
 	var c = expressionTree.$innerStates.expressions[expressionTree.$innerStates.index];
 	if(c == undefined){
 		newStateType = TYPE_END;
-	}else if(expressionTree.$innerStates.index == 0){
+	}else if(expressionTree.$innerStates.index == 0 && c == "$"){
 		newStateType = TYPE_START;
 	}else if(CHAR_INDEX_START == c){
 		newStateType = TYPE_INDEX;		
 	}else if(CHAR_PROPERTY_NEXT == c){
 		newStateType = TYPE_PROPERTY;
+		stepForward(expressionTree);
 	}else if(CHAR_KEEP_PATH_START == c){
-		newStateType = TYPE_KEEP_PATH_ENTERING;
+		newStateType = TYPE_KEEP_PATH;
 	}else if(CHAR_KEEP_PATH_END == c){
 		newStateType = TYPE_KEEP_PATH_LEAVING;
 	}else{
 		newStateType = TYPE_PROPERTY;
 	}
-	console.log("[parseDetectNewStateType] c: %s, newStateType: %s", c, newStateType);
+	// console.log("[parseDetectNewStateType] c: %s, newStateType: %s", c, newStateType);
 	return newStateType;
 }
 
@@ -486,8 +491,8 @@ function parseInitNewState(expressionTree, newStateType, putAs){
  * @returns character at the stepped back position
  */
 function stepBackward(expressionTree){
-	console.log("[stepBackward] expressionTree.$innerStates.expressions: %s, expressionTree.$innerStates.index:%d",
-			expressionTree.$innerStates.expressions, expressionTree.$innerStates.index);
+	//console.log("[stepBackward] expressionTree.$innerStates.expressions: %s, expressionTree.$innerStates.index:%d",
+	//		expressionTree.$innerStates.expressions, expressionTree.$innerStates.index);
 	if (expressionTree.$innerStates.index > expressionTree.$innerStates.expressions.length || expressionTree.$innerStates.index<=0) return null;
 	var c = expressionTree.$innerStates.expressions[--expressionTree.$innerStates.index];
 	return c;
@@ -503,8 +508,8 @@ function stepBackward(expressionTree){
  * @returns character at the position BEFORE stepping forward
  */
 function stepForward(expressionTree){
-	console.log("[stepForward] expressionTree.$innerStates.expressions: %s, expressionTree.$innerStates.index:%d",
-			expressionTree.$innerStates.expressions, expressionTree.$innerStates.index);
+	//console.log("[stepForward] expressionTree.$innerStates.expressions: %s, expressionTree.$innerStates.index:%d",
+	//		expressionTree.$innerStates.expressions, expressionTree.$innerStates.index);
 	if (expressionTree.$innerStates.index >= expressionTree.$innerStates.expressions.length || expressionTree.$innerStates.index<0) return null;
 	var c = expressionTree.$innerStates.expressions[expressionTree.$innerStates.index++];
 	return c;
@@ -522,8 +527,138 @@ function stepForward(expressionTree){
  * @param {Tree} parsing tree at the moment of the error
  */
 function parsingError(msg, tree){
-	console.log("[JSONTransform] at the position: %s, Parsing error: %s", tree.$innerStates.index, msg);
-	console.log("[JSONTransform] tree: %s", parsePrintExpressionTree(tree));
+	console.log("[JSONTransform:parsingError] at the position: %s, Parsing error: %s", tree.$innerStates.index, msg);
+	console.log("[JSONTransform:parsingError] tree: %s", parsePrintExpressionTree(tree));
+}
+
+/**
+ * @ngdoc object
+ * @name parsePrintExpressionTree
+ * @function
+ *
+ * @description
+ * Checks if part of path that stands behind the state should be preserved in the output data structure
+ * @param {Object} the state we are interested if it is under the keep-path clausula
+ * @param {Boolean} returns true if the path corresponding to the state should be preserved
+ * @returns processed object
+ */
+function isKeepPath(currentState){
+	while(currentState){
+		if(currentState.type == TYPE_KEEP_PATH) return true;
+		currentState = currentState.parentState;
+	}
+	return false;
+}
+
+/**
+ * @ngdoc object
+ * @name parsePrintExpressionTree
+ * @function
+ *
+ * @description
+ * Processes object according to the expression tree. Most of the time it navigates through the object structure and extracts particular part of object and gives it as a result,
+ * but very often original path of the object structure is preserved
+ * @param {Object} object to be processed
+ * @param {Tree} expression tree
+ * @returns processed object
+ */
+function processExpressionTree(objOriginal, expressionTree, currentState){
+	console.log("[JSONTransform:processExpressionTree] expressionTree: \n%s, objOriginal: %s", parsePrintExpressionTree(expressionTree), JSON.stringify(objOriginal));
+
+	var tabs = "\t";
+	var result = {};
+	var resultPath = result;
+	var obj = objOriginal;
+
+	if(currentState === undefined){
+		currentState = expressionTree.$innerStates.startState;
+	}
+	if(!currentState) return obj;
+	if(!obj) return obj;
+
+	currentState.visited = false;
+	if(currentState.childState) currentState.childState.visited = false;
+	if(currentState.nextState) currentState.nextState.visited = false;
+	var lastPropertyName = null;
+	while(currentState){
+		if(!currentState.visited){
+			currentState.visited = true;
+
+			switch(currentState.type){
+			case TYPE_KEEP_PATH:
+				resultPath = result;
+				break;
+			case TYPE_PROPERTY:
+				if(isKeepPath(currentState)){
+					if(lastPropertyName) resultPath = resultPath[lastPropertyName];
+					resultPath[lastPropertyName = currentState.value] = {};
+				}else{
+				}
+				obj = obj[currentState.value];
+				break;
+			case TYPE_INDEX:
+				var results = null;
+				var resultsNamed = null;
+				if(isKeepPath(currentState)){
+					if(obj.constructor === Array){
+						resultsNamed = [];
+					}else{
+						resultsNamed = {};
+					}
+				}else{
+					results = [];
+				}
+				
+				for(var i in currentState.value){
+					var selector = currentState.value[i];
+					var subState = currentState.nextState;
+					var res = processExpressionTree(obj[selector.value], expressionTree, subState);
+					if(results){
+						results.push(res);
+					}else{
+						resultsNamed[selector.value] = res;
+					}
+				}
+				if(results){
+					if(results.length == 1){
+						obj = result[0];
+					}else if(results.length == 0){
+						obj = null;
+					}else{
+						obj = results;
+					}
+				}
+				if(resultsNamed){
+					obj = resultsNamed;
+				}
+				break;
+			}
+		}
+
+		if(currentState.childState && !currentState.childState.visited){
+			currentState = currentState.childState;
+			if(currentState.childState) currentState.childState.visited = false;
+			if(currentState.nextState) currentState.nextState.visited = false;
+			tabs += "\t";
+			continue;
+		}else if(currentState.nextState){
+			currentState = currentState.nextState;
+			if(currentState.childState) currentState.childState.visited = false;
+			if(currentState.nextState) currentState.nextState.visited = false;
+			continue;
+		}else if(currentState.parentState){
+			currentState = currentState.parentState;
+			tabs = tabs.substring(0, tabs.length-1);
+		}else{
+			currentState = null;
+		}
+	}
+	if(lastPropertyName){
+		resultPath[lastPropertyName] = obj;
+	}else{
+		result = obj;
+	}
+	return result;
 }
 
 function processExpression(objOriginal, exprList, lastPropertyName, keepPath, depth){
