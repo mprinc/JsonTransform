@@ -35,36 +35,37 @@ function JSONTransform(objOriginal, expressionsStr, options) {
 		console.log("[JSONTransform] resultPartial: %s", JSON.stringify(resultPartial));
 		resultsPartial.push(resultPartial);
 
-		if(resultPartial && typeof resultPartial == 'object'){
-			for(var key in resultPartial){
-				if(typeof key == 'string') createArray = false;
-				resultsNo++;
-			}
-		}else if(resultPartial){
-			resultsNo++;
+		// if there is no flag:f and it is complex object but not Array
+		if(!expressionTree.$innerStates.flags.flat && (typeof resultPartial == 'object' && resultPartial.constructor != Array)){
+			createArray = false;
 		}
+		resultsNo++;
 	}
 
+	// if(typeof key == 'string') createArray = false;
 	console.log("[JSONTransform] createArray: %s, resultsNo:%s", createArray, resultsNo);
-	resultFull = createArray ? [] : {};
+	if(resultsNo == null){
+		resultFull = null;
+	}else if(resultsNo == 1){
+		resultFull = resultsPartial[0];
+	}else{
+		resultFull = createArray ? [] : {};
 
-	// populate results
-	for(var id in resultsPartial){
-		var resultPartial = resultsPartial[id];
-		if(resultPartial && typeof resultPartial == 'object'){
-			for(var key in resultPartial){
-				if(resultsNo<=1) return resultPartial;
-				if(createArray) resultFull.push(resultPartial[key]);
-				else resultFull[key] = resultPartial[key];
+		// populate results
+		for(var id in resultsPartial){
+			var resultPartial = resultsPartial[id];
+			if(resultPartial && typeof resultPartial == 'object'){
+				for(var key in resultPartial){
+					if(createArray) resultFull.push(resultPartial[key]);
+					else resultFull[key] = resultPartial[key];
+				}
+			}else if(resultPartial){
+				if(createArray) resultFull.push(resultPartial);
+				else{
+					// error, partial result is not possible to put in the result 
+				}
 			}
-		}else if(resultPartial){
-			// TODO: decide if we should set null into result
-			if(resultsNo<=1) return resultPartial;
-			if(createArray) resultFull.push(resultPartial);
-			else{
-				
-			}
-		}
+		}		
 	}
 
 	console.log("[JSONTransform] resultFull: %s", JSON.stringify(resultFull));
@@ -124,18 +125,21 @@ var CHAR_INDEX_SEPARATOR = ",";
 var CHAR_KEEP_PATH_START = "{";
 var CHAR_KEEP_PATH_END = "}";
 var CHAR_QUOTE = ["'", "\""];
+var CHAR_FLAGS_START = "(";
+var CHAR_FLAGS_END = ")";
 
 var CHAR_SPACE = [" ", "\t", "\r", "\n"];
 
 var TYPE_END = -2;
 var TYPE_UNKNOWN = -1;
 var TYPE_START = 0;
-var TYPE_PROPERTY = 1;
-var TYPE_INDEX = 2;
-var TYPE_KEEP_PATH = 3;
+var TYPE_FLAGS = 1;
+var TYPE_PROPERTY = 2;
+var TYPE_INDEX = 3;
+var TYPE_KEEP_PATH = 4;
 // not necessary, TYPE_KEEP_PATH_LEAVING is only for parseInitNewState() to not put new state but come back to the existing one
 // TODO: this is necessary to be fixed
-var TYPE_KEEP_PATH_LEAVING = 4;
+var TYPE_KEEP_PATH_LEAVING = 5;
 
 var STATE_STARTING = 0;
 var STATE_STARTED = 1;
@@ -150,7 +154,8 @@ var STATE_KEEP_PATH_LEAVING = 3;
 
 var INDEX_SELECTOR_TYPE_NAME = 0;
 var INDEX_SELECTOR_TYPE_NUMBER = 1;
-var specialChars = [CHAR_EXPRESSION_START, CHAR_PROPERTY_NEXT, CHAR_EXPRESSION_NEXT, CHAR_INDEX_START, CHAR_INDEX_END, CHAR_KEEP_PATH_START, CHAR_KEEP_PATH_END, CHAR_QUOTE[0], CHAR_QUOTE[1]];
+var specialChars = [CHAR_EXPRESSION_START, CHAR_PROPERTY_NEXT, CHAR_EXPRESSION_NEXT, CHAR_INDEX_START, CHAR_INDEX_END, CHAR_KEEP_PATH_START, 
+                    CHAR_KEEP_PATH_END, CHAR_QUOTE[0], CHAR_QUOTE[1], CHAR_FLAGS_START, CHAR_FLAGS_END];
 function parseExpressions(expressionsStr){
 	var expressionsTree = [];
 	var currentState = {
@@ -169,7 +174,10 @@ function parseExpressions(expressionsStr){
 			expressions: expressionsStr,
 			index: 0,
 			currentState: currentState,
-			startState: currentState
+			startState: currentState,
+			flags: {
+				flat: false
+			}
 		}
 	};
 	var c = null;
@@ -194,6 +202,25 @@ function parseExpressions(expressionsStr){
 				//c = stepForward(expressionTree);
 			}
 			break;
+		case TYPE_FLAGS:
+			if(currentState.$innerStates.processingState == STATE_STARTING){
+				currentState.$innerStates.processingState = STATE_STARTED;
+			}
+
+			if(specialChars.indexOf(c) < 0){
+				switch(c){
+					case 'f':
+						expressionTree.$innerStates.flags.flat = true;
+						break;
+				};
+			}else{
+				if(CHAR_FLAGS_END != c){
+					parsingError("Flags should finish with ')'", expressionTree);					
+				}
+				var nextState = parseDetectNewStateType(expressionTree);
+				parseInitNewState(expressionTree, nextState);
+			}
+			break;
 		case TYPE_PROPERTY:
 			if(currentState.$innerStates.processingState == STATE_STARTING){
 				currentState.$innerStates.processingState = STATE_STARTED;
@@ -205,8 +232,6 @@ function parseExpressions(expressionsStr){
 				stepBackward(expressionTree);
 				var nextState = parseDetectNewStateType(expressionTree);
 				parseInitNewState(expressionTree, nextState);
-				// we want to skip the special character
-				//c = stepForward(expressionTree);
 			}
 			break;
 		case TYPE_INDEX:
@@ -356,6 +381,9 @@ function parseTypeToStr(type){
 	case TYPE_UNKNOWN:
 		typeStr = "KEEP_UNKNOWN";
 		break;
+	case TYPE_FLAGS:
+		typeStr = "FLAGS";
+		break;
 	case TYPE_START:
 		typeStr = "START";
 		break;
@@ -396,6 +424,8 @@ function parseDetectNewStateType(expressionTree){
 		newStateType = TYPE_END;
 	}else if(expressionTree.$innerStates.index == 0 && c == "$"){
 		newStateType = TYPE_START;
+	}else if(CHAR_EXPRESSION_START == c){
+		newStateType = TYPE_START;
 	}else if(CHAR_INDEX_START == c){
 		newStateType = TYPE_INDEX;		
 	}else if(CHAR_PROPERTY_NEXT == c){
@@ -405,6 +435,9 @@ function parseDetectNewStateType(expressionTree){
 		newStateType = TYPE_KEEP_PATH;
 	}else if(CHAR_KEEP_PATH_END == c){
 		newStateType = TYPE_KEEP_PATH_LEAVING;
+	}else if(CHAR_FLAGS_START == c){
+		newStateType = TYPE_FLAGS;
+		stepForward(expressionTree);
 	}else{
 		newStateType = TYPE_PROPERTY;
 	}
@@ -528,7 +561,8 @@ function parsingError(msg, tree){
  * @param {Boolean} returns true if the path corresponding to the state should be preserved
  * @returns processed object
  */
-function isKeepPath(currentState){
+function isKeepPath(expressionTree, currentState){
+	if(expressionTree.$innerStates.flags.flat) return false;
 	while(currentState){
 		if(currentState.type == TYPE_KEEP_PATH) return true;
 		currentState = currentState.parentState;
@@ -619,7 +653,10 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 				resultPath = result;
 				break;
 			case TYPE_PROPERTY:
-				if(isKeepPath(currentState)){
+				// skip empty properties, like "$.{a}.{ab}"
+				// TODO: try avoiding creation, but later deletion is complicater because of references, referencin the state
+				if(currentState.value == "") break;
+				if(isKeepPath(expressionTree, currentState)){
 					if(lastPropertyName) resultPath = resultPath[lastPropertyName];
 					resultPath[lastPropertyName = currentState.value] = {};
 				}else{
@@ -629,7 +666,7 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 			case TYPE_INDEX:
 				var results = null;
 				var resultsNamed = null;
-				if(isKeepPath(currentState)){
+				if(isKeepPath(expressionTree, currentState)){
 					if(obj.constructor === Array){
 						resultsNamed = [];
 					}else{
@@ -644,7 +681,13 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 					var subState = nextStateInExpressionTree(expressionTree, currentState);
 					var res = processExpressionTree(obj[selector.value], expressionTree, subState);
 					if(results){
-						results.push(res);
+						if(expressionTree.$innerStates.flags.flat && res.constructor === Array){
+							for(var i=0; i<res.length; i++){
+								results.push(res[i]);
+							}
+						}else{
+							results.push(res);							
+						}
 					}else{
 						resultsNamed[selector.value] = res;
 					}

@@ -112,6 +112,26 @@ describe('JSONTransform', function() {
 			expect(result.a).to.not.have.property('ab');
 			expect(result.a).to.be.deep.equal(obj.a.ab);
 		});
+
+		it('should get sub-object when provided property name: "$.{a}{.ab}"', function() {
+			var result = transform(obj, "$.{a}{.ab}");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('a');
+			expect(result).to.not.have.property('ab');
+			expect(result.a).to.have.property('ab');
+			expect(result.a).to.not.have.property('aa');
+			expect(result.a.ab).to.be.deep.equal(obj.a.ab);
+		});
+
+		it('should get sub-object when provided property name: "$.{a}.{ab}"', function() {
+			var result = transform(obj, "$.{a}.{ab}");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('a');
+			expect(result).to.not.have.property('ab');
+			expect(result.a).to.have.property('ab');
+			expect(result.a).to.not.have.property('aa');
+			expect(result.a.ab).to.be.deep.equal(obj.a.ab);
+		});
 	});
 
 	describe('when keeping object structure', function() {
@@ -194,8 +214,8 @@ describe('JSONTransform', function() {
 			expect(result.data.paragraphLengthInWords).to.have.property('ALL');
 			expect(result.data.paragraphLengthInWords.ALL).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
 		});
-		xit('should get sub-object when provided property name: "$.{data}.SimpleStats{[\'paragraphLengthInWords\', \'paragraphLengthInSentences\']}.ALL"', function() {
-			var result = transform(obj, "$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences'].{ALL}");
+		it('should get sub-object when provided property name: "$.{data}.SimpleStats{[\'paragraphLengthInWords\', \'paragraphLengthInSentences\']}.ALL"', function() {
+			var result = transform(obj, "$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']{.ALL}");
 			console.log("[test] result: %s", JSON.stringify(result));
 			expect(result).to.have.property('data');
 			expect(result).to.not.have.property('params');
@@ -203,8 +223,51 @@ describe('JSONTransform', function() {
 			expect(result.data).to.not.have.property('paragraphLengthInWords');
 			expect(result.data).to.not.have.property('paragraphLengthInSentences');
 			expect(result.data).to.not.have.property('sentenceLength');
-			expect(result.data).to.have.property('ALL');
-			expect(result.data.paragraphLengthInWords.ALL).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data).to.have.length(2);
+			expect(result.data[0]).to.have.property('ALL');
+			expect(result.data[1]).to.have.property('ALL');
+			expect(result.data[1].ALL).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.ALL);
+		});
+		it("should get sub-object when provided property name: \"$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']['ALL', 'MIDDLE']\"", function() {
+			var result = transform(obj, "$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']['ALL', 'MIDDLE']");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result).to.not.have.property('SimpleStats');
+			expect(result).to.not.have.property('paragraphLengthInWords');
+			expect(result).to.not.have.property('paragraphLengthInSentences');
+			expect(result).to.not.have.property('sentenceLength');
+			expect(result.data).to.have.length(2);
+			expect(result.data[0]).to.have.length(2);
+			expect(result.data[0][0]).to.have.property('RESULT_ITEMS_COUNT');
+			expect(result.data[0][0]).to.have.property('RESULT_HITS_COUNT');
+			expect(result.data[0][0]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data[0][1]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.MIDDLE);
+			expect(result.data[1][0]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.ALL);
+			expect(result.data[1][1]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.MIDDLE);
+		});
+		it("should get sub-object when provided property name: \"(f)$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']['ALL', 'MIDDLE']\"", function() {
+			var result = transform(obj, "(f)$.{data}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']['ALL', 'MIDDLE']");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.not.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result).to.not.have.property('SimpleStats');
+			expect(result).to.not.have.property('paragraphLengthInWords');
+			expect(result).to.not.have.property('paragraphLengthInSentences');
+			expect(result).to.not.have.property('sentenceLength');
+			expect(result).to.have.length(4);
+			expect(result[0]).to.not.have.property('ALL');
+			expect(result[0]).to.not.have.property('MIDDLE');
+			expect(result[0]).to.have.property('RESULT_ITEMS_COUNT');
+			expect(result[0]).to.have.property('RESULT_HITS_COUNT');
+			expect(result[0]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+			expect(result[1]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.MIDDLE);
+			expect(result[2]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.ALL);
+			expect(result[3]).to.not.have.property('ALL');
+			expect(result[3]).to.not.have.property('MIDDLE');
+			expect(result[3]).to.have.property('RESULT_ITEMS_COUNT');
+			expect(result[3]).to.have.property('RESULT_HITS_COUNT');
+			expect(result[3]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.MIDDLE);
 		});
 	});
 
@@ -766,7 +829,7 @@ describe('JSONTransform', function() {
 		    }
 		};
 
-		it('should get sub-object when provided property name: "$.{data}[\'stats.results\'][\'corpus-en\', \'Genghis-en\'].SimpleStats"', function() {
+		it("should get array of two sub-objects when provided with successive index selections (2nd one is multiple): \"$.{data}['stats.results']['corpus-en', 'Genghis-en'].SimpleStats\"", function() {
 			var result = transform(obj, "$.{data}['stats.results']['corpus-en', 'Genghis-en'].SimpleStats");
 			console.log("[test] result: %s", JSON.stringify(result));
 			expect(result).to.have.property('data');
@@ -785,7 +848,7 @@ describe('JSONTransform', function() {
 			expect(result.data[0]).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats);
   			expect(result.data[1]).to.be.deep.equal(obj.data['stats.results']['Genghis-en'].SimpleStats);
 		});
-		it('should get sub-object when provided property name: "$.{data}[\'stats.results\'][\'corpus-en\', \'Genghis-en\'].SimpleStats"', function() {
+		it("should get array of two sub-objects when provided with successive index selections (2nd one is multiple and keeps path): \"$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats\"", function() {
 			var result = transform(obj, "$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats");
 			console.log("[test] result: %s", JSON.stringify(result));
 			expect(result).to.have.property('data');
@@ -803,10 +866,6 @@ describe('JSONTransform', function() {
 			expect(result.data['corpus-en']['paragraphLengthInWords']['ALL']).to.be.deep.equal(obj.data['stats.results']['corpus-en'].SimpleStats.paragraphLengthInWords.ALL);
 		});
 	});
-	// TODO: support for "." inside property name: a['property.with.dots']
-	// TODO: support for successive indexing: a['1st and']['2nd parameter']['in the row']
-	// TODO: fix for indexing property immediately ending up in the result tree: {a}['property'] should not put 'property' in the result tree
-	// TODO: correct support for array (integer) indexing
 
 	// TODO: add support for logical filtering
 	// TODO: add support for user defined logical filtering funcions
