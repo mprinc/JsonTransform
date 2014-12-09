@@ -1,0 +1,11 @@
+{
+    "name": "JSONTransform-web",
+    "description": "JSONTransform-web is a web/demo presentation of JSONTransform library",
+    "version": "0.0.5",
+    "private": true,
+    "scripts": {
+    	"start": "node ./scripts/web-server.js 8081"
+    },
+    "dependencies": {
+    }
+}

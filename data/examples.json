@@ -1,0 +1,112 @@
+{
+	"examples":[
+		{
+			"name-id": "introduction",
+			"name": "Introduction"
+			, "expressions": "$.a.aa.aab;"
+			, "dataset": {
+				"a": {
+					"aa": {
+						"aaa": 2,
+						"aab": "hello"
+					},
+					"ab": {
+						"aba": "world",
+						"abb": 2.05
+					}
+				},
+				"b": {
+					"ba": "not",
+					"bb": "that",
+					"bc": "deep",
+					"bd": "level"
+				}
+			}
+		},{
+			"name-id": "accessing",
+			"name": "Accessing"
+				, "expressions": "$.{a}.ab"
+				, "dataset": {
+					"a": {
+						"aa": {
+							"aaa": 2,
+							"aab": "hello"
+						},
+						"ab": {
+							"aba": "world",
+							"abb": 2.05
+						}
+					},
+					"b": {
+						"ba": "not",
+						"bb": "that",
+						"bc": "deep",
+						"bd": "level"
+					}
+				}
+		},{
+			"name-id": "indices",
+			"name": "Indices"
+				, "expressions": "$.a['ab', 'aab']"
+				, "dataset": {
+					"a": {
+						"aa": {
+							"aaa": 2,
+							"aab": "hello"
+						},
+						"ab": {
+							"aba": "world",
+							"abb": 2.05
+						}
+					},
+					"b": {
+						"ba": "not",
+						"bb": "that",
+						"bc": "deep"
+					}
+				}
+		},{
+			"name-id": "multi-expressions",
+			"name": "Multi-expressions"
+				, "expressions": "$.a.aa.aab; $.a.aa.aba"
+				, "dataset": {
+					"a": {
+						"aa": {
+							"aaa": 2,
+							"aab": "hello"
+						},
+						"ab": {
+							"aba": "world",
+							"abb": 2.05
+						}
+					},
+					"b": {
+						"ba": "not",
+						"bb": "that",
+						"bc": "deep"
+					}
+				}
+		},{
+			"name-id": "preserving-structure",
+			"name": "Preserving structure"
+				, "expressions": "$.{a}.ab"
+				, "dataset": {
+					"a": {
+						"aa": {
+							"aaa": 2,
+							"aab": "hello"
+						},
+						"ab": {
+							"aba": "world",
+							"abb": 2.05
+						}
+					},
+					"b": {
+						"ba": "not",
+						"bb": "that",
+						"bc": "deep"
+					}
+				}
+		}
+	]
+}

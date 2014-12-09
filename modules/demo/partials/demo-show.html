@@ -1,0 +1,27 @@
+Expression: <input id="expression" type="text" style="width:100%" value="$.a.aa"/>
+
+<button id="btnTransform" title="Transform" name="btnTransform" value="Transform" ng-click="transform()">Transform</button><br/>
+
+Dataset: <textarea id="dataset" cols="80" rows="25">
+{
+	"a": {
+		"aa": {
+			"aaa": 2,
+			"aab": "hello"
+		},
+		"ab": {
+			"aba": "world",
+			"abb": 2.05
+		}
+	},
+	"b": {
+		"ba": "not",
+		"bb": "that",
+		"bc": "deep"
+	}
+}
+</textarea>
+
+Dataset: <textarea id="datasetTransformed" cols="80" rows="25">
+</textarea>
+<div id="datasetTransformedHtml"></div>
