@@ -15,17 +15,25 @@ var demoApp = angular.module('JsonTransformDemoApp',[
 demoApp.config(['$routeProvider', function($routeProvider) {
 	$routeProvider
 	.when('/introduction', {
+		name: 'introduction',
 		templateUrl: 'modules/demo/partials/introduction.html'
 	})
 	.when('/accessing', {
+		name: 'accessing',
 		templateUrl: 'modules/demo/partials/accessing.html'
 	})
 
-	.when('/history', {
-		templateUrl: 'modules/history/partials/index.html'
+	.when('/indices', {
+		name: 'indices',
+		templateUrl: 'modules/demo/partials/indices.html'
 	})
-	.when('/history/id/:id', {
-		templateUrl: 'modules/history/partials/history-show.html'
+	.when('/multi-expressions', {
+		name: 'multi-expressions',
+		templateUrl: 'modules/demo/partials/multi-expressions.html'
+	})
+	.when('/preserving-structure', {
+		name: 'preserving-structure',
+		templateUrl: 'modules/demo/partials/preserving-structure.html'
 	})
 	.otherwise({
 		redirectTo: '/introduction'

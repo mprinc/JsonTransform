@@ -3,7 +3,7 @@
 		{
 			"name-id": "introduction",
 			"name": "Introduction"
-			, "expressions": "$.a.aa.aab;"
+			, "expressions": "$.a.aa.aab"
 			, "dataset": {
 				"a": {
 					"aa": {
@@ -68,7 +68,7 @@
 		},{
 			"name-id": "multi-expressions",
 			"name": "Multi-expressions"
-				, "expressions": "$.a.aa.aab; $.a.aa.aba"
+				, "expressions": "$.a.aa.aab; $.a.ab.aba"
 				, "dataset": {
 					"a": {
 						"aa": {
