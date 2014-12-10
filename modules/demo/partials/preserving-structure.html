@@ -9,8 +9,8 @@ So far <i><b>JsonTransform</b></i> seemed quite similar to the <i><b><a href="ht
 <p>
 <b><u>NOTE</u></b>: if you want standard JSONPath behavior, you can use the <b>f (flat) flag</b>. For example you can try this two expressions:
 <pre>
-<demo-expression expression="(f)$.serbia['aa', 'ab']['name', 'surname']"><b style="color:red">(f)</b>$.a['aa', 'ab']['name', 'surname']</demo-expression>
-<demo-expression expression="(f)$.serbia['aa', 'ab']['name', 'surname']; (f)$.krajina['name', 'surname']"><b style="color:red">(f)</b>$.a['aa', 'ab']['name', 'surname']; (f)$.krajina['name', 'surname']</demo-expression>
+<demo-expression expression="(f)$.humanities[0, 2]['name', 'surname']"><b style="color:red">(f)</b>$.humanities[0, 2]['name', 'surname']</demo-expression>
+<demo-expression expression="(f)$.science['astronomy', 'electronics']['name', 'surname']; (f)$.humanities[0, 2]['name', 'surname']"><b style="color:red">(f)</b>$.science['astronomy', 'electronics']['name', 'surname']; (f)$.humanities[0, 2]['name', 'surname']</demo-expression>
 </pre>
 You can also try to remove the flag, and understand the difference in behavior.
 
@@ -18,16 +18,16 @@ F-flag also explains a potential of the <i><b>JsonTransform</b></i> lib in prese
 than the just ultimate result, we want to sometimes see the origine the result is coming from. Please check the exmample.
 As you can see, in this way we are able to understand that Nobel writer <b><a href="http://en.wikipedia.org/wiki/Nikola_Tesla">Ivo Andric</a></b>, comes from serbia. and from more complex example
 <pre>
-<demo-expression expression="$.{serbia}.aa.['name', 'surname']; $.{krajina}.['name', 'surname']"></demo-expression>
+<demo-expression expression="$.{humanities}[0,2].['name', 'surname']; $.science.{electronics}.['name', 'surname']"></demo-expression>
 </pre>
 we can conclude that great Serbian scientist and inventer <b><a href="http://en.wikipedia.org/wiki/Nikola_Tesla">Nikola Tesla</a></b> is coming from Krajina,
 a part of Austro-Hungary empire at that time (now part of <b><a href="http://en.wikipedia.org/wiki/Croatia">Croatia</a></b>)
 </p>
 <p>Here are some even more complex examples:
 <pre>
-<demo-expression expression="$.{serbia.['aa', 'ab']}.['name', 'surname']"></demo-expression>
-<demo-expression expression="$.{serbia}.['aa', 'ab'].{['name', 'surname']}"></demo-expression>
-<demo-expression expression="$.{serbia}.aa.{['name', 'surname']}; $.{krajina}.{['name', 'surname']}"></demo-expression>
+<demo-expression expression="$.{science.['astronomy', 'electronics']}.['name', 'surname']"></demo-expression>
+<demo-expression expression="$.{science}.['astronomy', 'electronics'].{['name', 'surname']}"></demo-expression>
+<demo-expression expression="$.{science}.astronomy.{['name', 'surname']}; $.{humanities}[0].{['name', 'surname']}"></demo-expression>
 </pre>
 </p>
 </div>

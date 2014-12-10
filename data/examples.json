@@ -74,54 +74,114 @@
 			"name": "Multi-expressions"
 			, "expressions": "$.a.aa.aab; $.a.ab.aba"
 			, "dataset": {
-				"a": {
-					"aa": {
+				"science": {
+					"astronomy": {
 						"aaa": 2,
 						"aab": "hello",
-						"name": "Ivo",
-						"surname": "Andric"
+						"name": "Milutin",
+						"surname": "Milankovic",
+						"url": "http://en.wikipedia.org/wiki/Milutin_Milankovi%C4%87",
+						"birth": {
+							"date": "28 May 1879",
+							"place": "Dalj, Austria-Hungary (modern-day Croatia)"
+						}
 					},
-					"ab": {
-						"aba": "world",
-						"abb": 2.05,
-						"name": "Rudjer",
-						"surname": "Boskovic"
+					"electronics": {
+						"name": "Nikola",
+						"surname": "Tesla",
+						"url": "http://en.wikipedia.org/wiki/Nikola_Tesla",
+						"birth": {
+							"date": "10 July 1856",
+							"place": "Smiljan, Krajina, Austrian Empire (modern-day Croatia)"
+						}
 					}
 				},
-				"b": {
-					"ba": "not",
-					"bb": "that",
-					"bc": "deep",
-					"name": "Nikola",
-					"surname": "Tesla"
-				}
+				"humanities": [
+					{
+						"name": "Ivo",
+						"surname": "Andric",
+						"url": "http://en.wikipedia.org/wiki/Ivo_Andri%C4%87",
+						"birth": {
+							"date": "9 October 1892",
+							"place": "Travnik, Austria-Hungary (modern Bosnia and Herzegovina)"
+						}
+					},
+					{
+						"name": "Momo",
+						"surname": "Kapor",
+						"url": "http://en.wikipedia.org/wiki/Momo_Kapor",
+						"birth": {
+							"date": "8 April 1937",
+							"place": "Sarajevo, Drina Banovina, Kingdom of Yugoslavia (modern Bosnia and Herzegovina)"
+						}
+					},
+					{
+						"name": "Milan",
+						"surname": "Pavic",
+						"url": "http://en.wikipedia.org/wiki/Milorad_Pavi%C4%87",
+						"birth": {
+							"date": "15 October 1929",
+							"place": "Belgrade, Kingdom of Yugoslavia (modern Serbia)"
+						}
+					}
+				]
 			}
 		},{
 			"name-id": "preserving-structure",
 			"name": "Preserving structure"
 			, "expressions": "$.{serbia}.aa.['name', 'surname']"
 			, "dataset": {
-				"serbia": {
-					"aa": {
+				"science": {
+					"astronomy": {
 						"aaa": 2,
 						"aab": "hello",
-						"name": "Ivo",
-						"surname": "Andric"
+						"name": "Milutin",
+						"surname": "Milankovic",
+						"url": "http://en.wikipedia.org/wiki/Milutin_Milankovi%C4%87",
+						"birth": {
+							"date": "28 May 1879",
+							"place": "Dalj, Austria-Hungary (modern-day Croatia)"
+						}
 					},
-					"ab": {
-						"aba": "world",
-						"abb": 2.05,
-						"name": "Rudjer",
-						"surname": "Boskovic"
+					"electronics": {
+						"name": "Nikola",
+						"surname": "Tesla",
+						"url": "http://en.wikipedia.org/wiki/Nikola_Tesla",
+						"birth": {
+							"date": "10 July 1856",
+							"place": "Smiljan, Krajina, Austrian Empire (modern-day Croatia)"
+						}
 					}
 				},
-				"krajina": {
-					"ba": "not",
-					"bb": "that",
-					"bc": "deep",
-					"name": "Nikola",
-					"surname": "Tesla"
-				}
+				"humanities": [
+					{
+						"name": "Ivo",
+						"surname": "Andric",
+						"url": "http://en.wikipedia.org/wiki/Ivo_Andri%C4%87",
+						"birth": {
+							"date": "9 October 1892",
+							"place": "Travnik, Austria-Hungary (modern Bosnia and Herzegovina)"
+						}
+					},
+					{
+						"name": "Momo",
+						"surname": "Kapor",
+						"url": "http://en.wikipedia.org/wiki/Momo_Kapor",
+						"birth": {
+							"date": "8 April 1937",
+							"place": "Sarajevo, Drina Banovina, Kingdom of Yugoslavia (modern Bosnia and Herzegovina)"
+						}
+					},
+					{
+						"name": "Milan",
+						"surname": "Pavic",
+						"url": "http://en.wikipedia.org/wiki/Milorad_Pavi%C4%87",
+						"birth": {
+							"date": "15 October 1929",
+							"place": "Belgrade, Kingdom of Yugoslavia (modern Serbia)"
+						}
+					}
+				]
 			}
 		},{
 			"name-id": "complex-dataset",
@@ -686,27 +746,57 @@
 			"name": "Full features list"
 			, "expressions": "$.{serbia}.aa.['name', 'surname']"
 			, "dataset": {
-				"serbia": {
-					"aa": {
+				"science": {
+					"astronomy": {
 						"aaa": 2,
 						"aab": "hello",
-						"name": "Ivo",
-						"surname": "Andric"
+						"name": "Milutin",
+						"surname": "Milankovic",
+						"url": "http://en.wikipedia.org/wiki/Milutin_Milankovi%C4%87",
+						"birth": {
+							"date": "28 May 1879",
+							"place": "Dalj, Austria-Hungary (modern-day Croatia)"
+						}
 					},
-					"ab": {
-						"aba": "world",
-						"abb": 2.05,
-						"name": "Rudjer",
-						"surname": "Boskovic"
+					"electronics": {
+						"name": "Nikola",
+						"surname": "Tesla",
+						"url": "http://en.wikipedia.org/wiki/Nikola_Tesla",
+						"birth": {
+							"date": "10 July 1856",
+							"place": "Smiljan, Krajina, Austrian Empire (modern-day Croatia)"
+						}
 					}
 				},
-				"krajina": {
-					"ba": "not",
-					"bb": "that",
-					"bc": "deep",
-					"name": "Nikola",
-					"surname": "Tesla"
-				}
+				"humanities": [
+					{
+						"name": "Ivo",
+						"surname": "Andric",
+						"url": "http://en.wikipedia.org/wiki/Ivo_Andri%C4%87",
+						"birth": {
+							"date": "9 October 1892",
+							"place": "Travnik, Austria-Hungary (modern Bosnia and Herzegovina)"
+						}
+					},
+					{
+						"name": "Momo",
+						"surname": "Kapor",
+						"url": "http://en.wikipedia.org/wiki/Momo_Kapor",
+						"birth": {
+							"date": "8 April 1937",
+							"place": "Sarajevo, Drina Banovina, Kingdom of Yugoslavia (modern Bosnia and Herzegovina)"
+						}
+					},
+					{
+						"name": "Milan",
+						"surname": "Pavic",
+						"url": "http://en.wikipedia.org/wiki/Milorad_Pavi%C4%87",
+						"birth": {
+							"date": "15 October 1929",
+							"place": "Belgrade, Kingdom of Yugoslavia (modern Serbia)"
+						}
+					}
+				]
 			}
 		}
 	]

@@ -3,12 +3,38 @@
 </div>
 <div class="description">
 <p>
-	TBD
-</p>
+Here we summarize all features that are currently supported with <a href="http://github.com/mprinc/JsonTransform"><b>JsonTransform</b></a>.
+They are listed in the table with short description and example of expression. You can always click on the expression and execute it in that way</p>
 
 <p>
-<pre>
-<demo-expression expression="$.a.ab.abb"></demo-expression>
-</pre>
+<table>
+	<tr><td>Properties access</td>
+	<td><demo-expression expression="$.science.electronics"></demo-expression></td></tr>
+
+	<tr><td>Array access</td>
+	<td><demo-expression expression="$.humanities[0]"></demo-expression></td></tr>
+
+	<tr><td>Hash array access</td>
+	<td><demo-expression expression="$.science.['electronics']"></demo-expression></td></tr>
+
+	<tr><td>Multi array indices</td>
+	<td><demo-expression expression="$.humanities[0,2]"></demo-expression></td></tr>
+
+	<tr><td>Multi hash indices</td>
+	<td><demo-expression expression="$.science.electronics['name', 'surname']"></demo-expression></td></tr>
+
+	<tr><td>Multi expression</td>
+	<td><demo-expression expression="$.science.electronics['name', 'surname']; $.humanities[1]['name', 'surname']"></demo-expression></td></tr>
+
+	<tr><td>Preserving structure</td>
+	<td><demo-expression expression="$.science{['electronics', 'astronomy']}.birth"></demo-expression></td></tr>
+
+	<tr><td>Preserving structure (multiple)</td>
+	<td><demo-expression expression="$.science{['electronics', 'astronomy']}.birth{.place}"></demo-expression></td></tr>
+
+	<tr><td>F-flat flag</td>
+	<td><demo-expression expression="(f)$.science['electronics', 'astronomy']['name', 'surname']"></demo-expression></td></tr>
+</table>
 </div>
+
 <demo-show example-name="'full-features-list'" expressions="" dataset=""></demo-show>
