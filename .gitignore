@@ -34,7 +34,7 @@ env/
 bin/
 build/
 develop-eggs/
-dist/
+#dist/
 eggs/
 lib64/
 parts/
