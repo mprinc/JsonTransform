@@ -905,6 +905,9 @@ describe('JSONTransform', function() {
 
 	// TODO: add support for logical filtering
 	// TODO: add support for user defined logical filtering funcions
+	// TODO: add support for more advanced array interval ranges
+	// TODO: add support for logical filtering but not only by value of some parameter, 
+	//	but also by name of a parameter
 
 	// Semantic-modifications: plugin
 	// TODO: add support for renaming part of data-structure

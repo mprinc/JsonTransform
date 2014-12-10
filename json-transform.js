@@ -24,9 +24,10 @@ function JSONTransform(objOriginal, expressionsStr, options) {
 	console.log("[JSONTransform] expressions: %s", JSON.stringify(expressions));
 	for(var id in expressions){
 		var expr = expressions[id].trim();
+		if(!expr || expr=="") continue;
+		console.log("[JSONTransform] expr: %s", expr);
 		
 		var expressionTree = parseExpressions(expr);
-		console.log("[JSONTransform] expr: %s", expr);
 		var resultPartial = processExpressionTree(objOriginal, expressionTree);
 		
 //		var exprList = expr.split(".");
