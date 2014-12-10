@@ -5,6 +5,7 @@
 It is heavily inspired with  and [XPath](http://www.w3.org/standards/techs/xpath#w3c_all), and its JSON/JS equivalent [JSONPath](http://goessner.net/articles/JsonPath/), but acting rather as an on-the-fly interceptor of JSON flow communication with filtering and semantic restructuring support of the underlying JSON dataset.
 
 Surely it can be used on vanilla JSON objects, but that is not of our main interest.
+It works both as a **frontend** or **backend** Node.js library.
 
 Check [JsonTransform in action](http://mprinc.github.io/JsonTransform/).
 
