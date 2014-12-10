@@ -1,7 +1,9 @@
 ## Introduction
 
-**JsonTransform** is a JSON flow (REST, ...) with strong focus on preserving original flow schema/structure/semantic.
-It is heavily inspired with  and [XPath](http://www.w3.org/standards/techs/xpath#w3c_all), and its JSON/JS equivalent [JSONPath](http://goessner.net/articles/JsonPath/), but rather acting rather as an interceptor of JSON flow communication with on-the-fly support for filtering and semantic restructuring of underlying JSON dataset
+**JsonTransform** is a JSON (flow, REST, object) manipulation library with strong focus on preserving original data structure (schema).
+
+It is heavily inspired with  and [XPath](http://www.w3.org/standards/techs/xpath#w3c_all), and its JSON/JS equivalent [JSONPath](http://goessner.net/articles/JsonPath/), but acting rather as an on-the-fly interceptor of JSON flow communication with filtering and semantic restructuring support of the underlying JSON dataset.
+
 Surely it can be used on vanilla JSON objects, but that is not of our main interest.
 
 Check [JsonTransform in action](http://mprinc.github.io/JsonTransform/).
