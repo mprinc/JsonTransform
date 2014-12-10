@@ -1,5 +1,16 @@
-<div>
+<div class="title">
 	<h1>Multi-expressions</h1>
 </div>
-JsonTransform is a library helping with
+<div class="description">
+<p>
+You can get result that is superposition of as many as you need expressions, where you get a merged list of results for each expression. 
+</p>
+<p>
+You can try some of the following multi-expressions:
+<pre>
+<demo-expression expression="$.a.aa.surname; $.b.surname"></demo-expression>
+<demo-expression expression="$.a['aa', 'ab']['name', 'surname']; $.b['name', 'surname']"></demo-expression>
+</pre>
+</p>
+</div>
 <demo-show example-name="'multi-expressions'" expressions="" dataset=""></demo-show>

@@ -1,0 +1,59 @@
+<div class="title">
+	<h1>Complex Dataset</h1>
+</div>
+<div class="description">
+<p>
+Here we will present some more complex dataset that is an example of the real-life usage of the <i><b>JsonTransform</b></i> library
+</p>
+
+<p>
+The concrete dataset is an example of <b>cumputational linguistic</b> result after processing a corpus of novels on the server side code.
+As you can see dataset is pretty complex and user is most likely interest in sub-dataset. Therefore, it is good idea to place JsonTransform either on the server before sending data
+or on the client side before consuming data in order to reduce datast, but also to adapt the dataset structure with structure (schema) that visualizing component is expecting.  
+</p>
+
+<p>
+<b><i><u>NOTE:</u></i></b> The argument for transforming and reducing dataset on the <b>server-side</b> is in reducing bandwidth and time necessary to transfer dataset. This is mostly imoprtant on big scientific datasets.
+However, the argument for transforming dataset on the <b>client-side</b> is in freedom for user to decade on transformation and transform dataset many times. 
+To balance interests, one can send user transformation expression to the server side and request the new dataset from server, any time user change transformation expression.
+</p>
+
+<p>
+At the example, you can see that we are accessing the <b>data</b> subset (we are keeping it in the output structure) then <b>'stats.results'</b> subset,
+then we are <b>filtering</b> 'stats.results' only to 'corpus-en', 'Genghis-en' that we are interested in, and only in <b>'SimpleStats'</b>.
+</p>
+<p>
+However, as we can see, we are not preserving the origin of SimpleStats, so we need to change our expression and say that we want to 
+preserve 'corpus-en', 'Genghis-en' in the output dataset structure. 
+<pre>
+<demo-expression expression="$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats"></demo-expression>
+</pre>
+</p>
+<p>
+Most of the time we are interested in only 'paragraphLengthInWords' and 'paragraphLengthInSentences' or 'sentenceLength' instead. So let's reduce expression just to 
+<b>'paragraphLengthInWords' and 'paragraphLengthInSentences'</b>: 
+<pre>
+<demo-expression expression="$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats['paragraphLengthInWords', 'paragraphLengthInSentences']"></demo-expression>
+</pre>
+Ahh, and to preserve <b>'paragraphLengthInWords' and 'paragraphLengthInSentences'</b> into the output structure: 
+<pre>
+<demo-expression expression="$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats{['paragraphLengthInWords', 'paragraphLengthInSentences']}"></demo-expression>
+</pre>
+</p>
+
+<p>
+Finally, we are usually interested in only one category of statistics, let's say whole paragraph (<b>'ALL'</b>)
+<pre>
+<demo-expression expression="$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats{['paragraphLengthInWords', 'paragraphLengthInSentences']}.ALL"></demo-expression>
+</pre>
+and we do not care for <b>RESULT_EXAMPLES</b> in the most cases:
+<pre>
+<demo-expression expression="$.{data}['stats.results']{['corpus-en', 'Genghis-en']}.SimpleStats{['paragraphLengthInWords', 'paragraphLengthInSentences']}.ALL{['RESULT_ITEMS_COUNT', 'RESULT_HITS_COUNT']}"></demo-expression>
+</pre>
+</p>
+
+<p>
+With this final example we saw how simple and readable form of dataset we can get <b>on-the-fly</b> from the heavy original dataset.
+</p>
+</div>
+<demo-show example-name="'complex-dataset'" expressions="" dataset=""></demo-show>

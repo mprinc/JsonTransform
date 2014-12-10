@@ -1,5 +1,31 @@
-<div>
+<div class="title">
 	<h1>Introduction</h1>
 </div>
-JsonTransform is a library helping with
+<div class="description">
+<p>
+<a href="http://github.com/mprinc/JsonTransform"><b>JsonTransform</b></a> is a library helping with transformation of JSON objects. You use JavaScript-like expressions to instruct JSON data structure selection, filtering and reduction.
+Here we can see a simple example which is purely JS compliant and very basic, not showing the true power of JsonTransform.
+</p>
+<p>
+As you can see you have a field <b>Expression</b> where you provide your transformation expression, 
+and <b>dataset</b> where you provide JSON object against which expression is executed. Finally, after clicking <b>Transform</b> button, you will get result in the <b>DatasetTransformed</b>.
+More structure result you can see in the field <b>DatasetTransformedHTML</b>. 
+</p>
+<p>
+In the background, something similar to
+<pre>
+$("<b style="color:blue">#DatasetTransformed</b>").val(<b style="color:red">JSONTransform(</b> $("<b style="color:blue">#dataset</b>").val(), $("<b style="color:blue">#expression</b>".val() <b style="color:red">)</b> );
+</pre>
+is happening.
+</p>
+<p>You can try to change expression and see result change, and then you can navigate to the next example</p>
+
+<p>
+<b><i><u>NOTE:</u></i></b> You can <b>click</b> on eny example of expressions and they will be automatically copied into the expression field. Try to click on the expression
+<pre>
+<demo-expression expression="$.a.aa.aaa"></demo-expression>
+</pre>
+</p>
+
+</div>
 <demo-show example-name="'introduction'" expressions="" dataset=""></demo-show>

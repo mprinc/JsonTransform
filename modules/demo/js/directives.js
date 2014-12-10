@@ -1,6 +1,26 @@
 'use strict';
 
 angular.module('demoDirectives', [])
+	.directive('demoExpression', ['$rootScope', 'DemoService', function($rootScope, $route, DemoService){
+		// http://docs.angularjs.org/guide/directive
+		return {
+			restrict: 'E',
+			scope: {
+			},
+			// ng-if directive: http://docs.angularjs.org/api/ng.directive:ngIf
+			// expression: http://docs.angularjs.org/guide/expression
+			templateUrl: 'modules/demo/partials/demo-expression.html',
+			controller: function ( $scope, $element, $attrs ) {
+				//alert($attrs.expression);
+				$scope.expressionVal = String($attrs.expression);
+				$scope.populate = function(){
+					// $scope.$parent.$emit
+					$rootScope.$broadcast('newExpression', $scope.expressionVal);
+					//alert("sending: "+$scope.expression);
+				};
+    		}
+		};
+	}])
 	.directive('demoNavbar', ['$route', 'DemoService', function($route, DemoService){
 		// http://docs.angularjs.org/guide/directive
 		return {
@@ -72,7 +92,7 @@ angular.module('demoDirectives', [])
     		}
 		};
 	}])
-	.directive('demoShow', ['$route', 'DemoService', function($route, DemoService){
+	.directive('demoShow', ['$rootScope', '$route', 'DemoService', function($rootScope, $route, DemoService){
 		// http://docs.angularjs.org/guide/directive
 		return {
 			restrict: 'E',
@@ -113,7 +133,7 @@ angular.module('demoDirectives', [])
 					
 
 					console.log("expression: %s", expression);
-					//console.log("datasetStr: %s", datasetStr);	
+					//console.log("datasetStr: %s", datasetStr);
 					console.log("dataset: %s", JSON.stringify(dataset));
 					// var datasetTransformed = dataset;
 					var datasetTransformed = JSONTransform(dataset, expression);
@@ -122,6 +142,12 @@ angular.module('demoDirectives', [])
 					angular.element(document.querySelector('#datasetTransformedHtml')).html(node);
 					$scope.experimentNameId = $route.current.name;
 				};
+				// http://stackoverflow.com/questions/11252780/whats-the-correct-way-to-communicate-between-controllers-in-angularjs/19498009#19498009
+				$rootScope.$on('newExpression', function(event, expression) {
+					// alert("received: "+expression);
+					angular.element(document.querySelector('#expression')).val(String(expression));
+					$scope.transform();
+				});
     		}
 		};
 	}])

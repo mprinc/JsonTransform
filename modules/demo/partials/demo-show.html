@@ -1,6 +1,7 @@
-Expression: <input id="expression" type="text" style="width:100%" value="$.a.aa"/>
+<div class="demo-show">
+<span class="demo-show-expression-title">Expression</span>: <input id="expression" type="text" class="demo-show-expression" value="$.a.aa"/>
 
-<button id="btnTransform" title="Transform" name="btnTransform" value="Transform" ng-click="transform()">Transform</button><br/>
+<button id="btnTransform" title="Transform" name="btnTransform" value="Transform" ng-click="transform()" class="demo-show-expression-button">Transform</button><br/>
 
 Dataset: <textarea id="dataset" cols="80" rows="25">
 {
@@ -25,3 +26,4 @@ Dataset: <textarea id="dataset" cols="80" rows="25">
 Dataset: <textarea id="datasetTransformed" cols="80" rows="25">
 </textarea>
 <div id="datasetTransformedHtml"></div>
+</div>

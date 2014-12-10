@@ -1,5 +1,35 @@
-<div>
+<div class="title">
 	<h1>Preserving Structure</h1>
 </div>
-JsonTransform is a library helping with
+<div class="description">
+<p>
+So far <i><b>JsonTransform</b></i> seemed quite similar to the <i><b><a href="http://goessner.net/articles/JsonPath/">JSONPath</a></b></i> library, except the main difference in 
+<b>preserving the structure of returned results</b>.
+</p>
+<p>
+<b><u>NOTE</u></b>: if you want standard JSONPath behavior, you can use the <b>f (flat) flag</b>. For example you can try this two expressions:
+<pre>
+<demo-expression expression="(f)$.serbia['aa', 'ab']['name', 'surname']"><b style="color:red">(f)</b>$.a['aa', 'ab']['name', 'surname']</demo-expression>
+<demo-expression expression="(f)$.serbia['aa', 'ab']['name', 'surname']; (f)$.krajina['name', 'surname']"><b style="color:red">(f)</b>$.a['aa', 'ab']['name', 'surname']; (f)$.krajina['name', 'surname']</demo-expression>
+</pre>
+You can also try to remove the flag, and understand the difference in behavior.
+
+F-flag also explains a potential of the <i><b>JsonTransform</b></i> lib in preserving the structure of results. However, we want more, we want to keep more of the structure, 
+than the just ultimate result, we want to sometimes see the origine the result is coming from. Please check the exmample.
+As you can see, in this way we are able to understand that Nobel writer <b><a href="http://en.wikipedia.org/wiki/Nikola_Tesla">Ivo Andric</a></b>, comes from serbia. and from more complex example
+<pre>
+<demo-expression expression="$.{serbia}.aa.['name', 'surname']; $.{krajina}.['name', 'surname']"></demo-expression>
+</pre>
+we can conclude that great Serbian scientist and inventer <b><a href="http://en.wikipedia.org/wiki/Nikola_Tesla">Nikola Tesla</a></b> is coming from Krajina,
+a part of Austro-Hungary empire at that time (now part of <b><a href="http://en.wikipedia.org/wiki/Croatia">Croatia</a></b>)
+</p>
+<p>Here are some even more complex examples:
+<pre>
+<demo-expression expression="$.{serbia.['aa', 'ab']}.['name', 'surname']"></demo-expression>
+<demo-expression expression="$.{serbia}.['aa', 'ab'].{['name', 'surname']}"></demo-expression>
+<demo-expression expression="$.{serbia}.aa.{['name', 'surname']}; $.{krajina}.{['name', 'surname']}"></demo-expression>
+</pre>
+</p>
+</div>
+
 <demo-show example-name="'preserving-structure'" expressions="" dataset=""></demo-show>

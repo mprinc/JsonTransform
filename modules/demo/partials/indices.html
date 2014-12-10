@@ -1,5 +1,22 @@
-<div>
-	<h1>Indices</h1>
+<div class="title">
+	<h1>Accessing</h1>
 </div>
-JsonTransform is a library helping with
+<div class="description">
+<p>
+Appart of standard JS accessing indices, you have an option to access multiple indices at once, like using <b>"$.b['ba', 'bc']"</b> 
+where you get a merged list of results for each index. 
+</p>
+<p>
+You can try some of the following expressions:
+<pre>
+<demo-expression expression="$.a['aa', 'ab']"></demo-expression>
+<demo-expression expression="$.a.ab.abb"></demo-expression>
+</pre>
+or even more complex, like:
+<pre>
+<demo-expression expression="$.a['aa', 'ab'].name"></demo-expression>
+<demo-expression expression="$.a['aa', 'ab']['name', 'surname']"></demo-expression>
+</pre>
+</p>
+</div>
 <demo-show example-name="'indices'" expressions="" dataset=""></demo-show>

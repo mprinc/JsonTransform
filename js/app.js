@@ -35,6 +35,14 @@ demoApp.config(['$routeProvider', function($routeProvider) {
 		name: 'preserving-structure',
 		templateUrl: 'modules/demo/partials/preserving-structure.html'
 	})
+	.when('/complex-dataset', {
+		name: 'complex-dataset',
+		templateUrl: 'modules/demo/partials/complex-dataset.html'
+	})
+	.when('/full-features-list', {
+		name: 'full-features-list',
+		templateUrl: 'modules/demo/partials/full-features-list.html'
+	})
 	.otherwise({
 		redirectTo: '/introduction'
 	});

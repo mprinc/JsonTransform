@@ -1,5 +1,20 @@
-<div>
+<div class="title">
 	<h1>Accessing</h1>
 </div>
-JsonTransform is a library helping with
+<div class="description">
+<p>
+You can use <i><b>JsonTransform</b></i> to access any sub data structure.
+</p>
+<p>
+You can try some of the following expressions:
+<pre>
+<demo-expression expression="$.a.ab"></demo-expression>
+<demo-expression expression="$.a.ab.abb"></demo-expression>
+<demo-expression expression="$.b.bb"></demo-expression>
+<demo-expression expression="$.b['bb']"></demo-expression>
+</pre>
+etc.
+</p>
+<p>Note that in order to make expression more resonating with JS access, we introduce initial <b>$.</b> "prefix", where <b>$</b> represents a reference of the initial dataset.</p>
+</div>
 <demo-show example-name="'accessing'" expressions="" dataset=""></demo-show>

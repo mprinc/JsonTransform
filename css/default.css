@@ -1,0 +1,60 @@
+a{
+	color: #0000aa;
+}
+
+.clickable{
+	cursor: pointer;
+	color: blue;
+	padding: 0px;
+	margin: 0px;
+}
+
+.clickable:hover{
+	font-weight: bold;
+	padding: 0px;
+	margin: 0px;
+}
+
+pre {
+	background-color: #aaaaaa;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+ 
+.title{
+	
+}
+
+.description{
+	padding: 5px;
+}
+
+.demo-show{
+	border: #aaaaaa 3px solid;
+	padding: 5px;
+	margin: 5px;
+	background-color: #999999;
+	border-radius: 5px;
+}
+
+.demo-show-expression{
+	font-weight: bold;
+	color: #000077;
+	width:100%;
+}
+
+.demo-show-expression-title{
+	font-weight: bold;
+	color: #000077;
+}
+
+.demo-show-expression-button{
+	font-weight: bold;
+	color: #555555;
+	border-width: 2px;
+	margin: 5px;
+}
+
+#datasetTransformedHtml{
+	margin-bottom: 100px;
+}
