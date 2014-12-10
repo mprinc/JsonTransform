@@ -15,7 +15,7 @@ angular.module('demoDirectives', [])
 				$scope.expressionVal = String($attrs.expression);
 				$scope.populate = function(){
 					// $scope.$parent.$emit
-					$rootScope.$broadcast('newExpression', $scope.expressionVal);
+					$rootScope.$emit('newExpression', $scope.expressionVal);
 					//alert("sending: "+$scope.expression);
 				};
     		}
@@ -143,11 +143,12 @@ angular.module('demoDirectives', [])
 					$scope.experimentNameId = $route.current.name;
 				};
 				// http://stackoverflow.com/questions/11252780/whats-the-correct-way-to-communicate-between-controllers-in-angularjs/19498009#19498009
-				$rootScope.$on('newExpression', function(event, expression) {
+				var unbind = $rootScope.$on('newExpression', function(event, expression) {
 					// alert("received: "+expression);
 					angular.element(document.querySelector('#expression')).val(String(expression));
 					$scope.transform();
 				});
+				$scope.$on('$destroy', unbind);
     		}
 		};
 	}])
