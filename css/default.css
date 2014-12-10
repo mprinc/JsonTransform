@@ -2,6 +2,9 @@ a{
 	color: #0000aa;
 }
 
+.content{
+	background-color: #eeeeee;
+}
 .clickable{
 	cursor: pointer;
 	color: blue;
@@ -16,7 +19,7 @@ a{
 }
 
 pre {
-	background-color: #aaaaaa;
+	background-color: #dddddd;
 	margin-left: 10px;
 	margin-right: 10px;
 }
@@ -30,10 +33,10 @@ pre {
 }
 
 .demo-show{
-	border: #aaaaaa 3px solid;
+	border: #cccccc 3px solid;
 	padding: 5px;
 	margin: 5px;
-	background-color: #999999;
+	background-color: #dddddd;
 	border-radius: 5px;
 }
 
@@ -59,7 +62,6 @@ table{
 	width: 80%;
 	font-weight: bold;
 	border: #aaaaaa 1px solid;
-	color: #aaaaaa;
 	border-width: 2px;
 	margin: 5px;
 }
@@ -70,7 +72,7 @@ tr{
 
 td{
 	border: #aaaaaa 1px solid;
-	color: #aaaaaa;
+	color: #888888;
 	border-width: 2px;
 	margin: 5px;
 	padding: 3px;
