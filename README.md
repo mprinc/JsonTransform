@@ -207,12 +207,8 @@ Notice that there wouldn't be the list with only one element but just an origina
 ---
 #### MISSING FEATURES (BUGs)
 
-	// TODO: support for "." inside property name: a['property.with.dots']
-	// TODO: support for successive indexing: a['1st and']['2nd parameter']['in the row']
-	// TODO: fix for indexing property immediately ending up in the result tree: {a}['property'] should not put 'property' in the result tree
-	// TODO: correct support for array (integer) indexing
 	// TODO: add support for logical filtering
-	// TODO: add support for user defined logical filtering funcions
+	// TODO: add support for user defined logical filtering functions
 
 #### FUTURE FEATURES
 
@@ -230,4 +226,4 @@ Notice that there wouldn't be the list with only one element but just an origina
 	// TODO: add support for detecting transformations necessary between two JSON object examples
 
 #### COPYRIGHT AND LICENSE
-MIT
+MIT License - see the LICENSE.txt file in the source distribution
