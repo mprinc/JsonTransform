@@ -54,6 +54,13 @@ and we do not care for <b>RESULT_EXAMPLES</b> in the most cases:
 
 <p>
 With this final example we saw how simple and readable form of dataset we can get <b>on-the-fly</b> from the heavy original dataset.
+
+Just before the end, let remove our restrictions and accept all novels and all statistisc (using <b>*</b>):
+
+<pre>
+<demo-expression expression="$.{data}['stats.results']{[*]}.SimpleStats{[*]}.ALL{['RESULT_ITEMS_COUNT', 'RESULT_HITS_COUNT']}"></demo-expression>
+</pre>
+
 </p>
 </div>
 <demo-show example-name="'complex-dataset'" expressions="" dataset=""></demo-show>
