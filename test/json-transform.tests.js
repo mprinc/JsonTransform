@@ -6,7 +6,9 @@ var assert = require('chai').assert;
 // testing:
 // cd ~/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/
 // node node_modules/mocha/bin/mocha test/json-transform.tests.js
-
+// cp /Users/sasha/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/json-transform.js /Users/sasha/Documents/data/development/JsonTransform-web/
+// cp /Users/sasha/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/test/json-transform.tests.js /Users/sasha/Documents/data/development/JsonTransform/test/
+// cd /Users/sasha/Documents/data/development/JsonTransform-web/
 describe('JSONTransform', function() {
 
 	describe('when doing empty access', function() {
@@ -131,6 +133,95 @@ describe('JSONTransform', function() {
 			expect(result.a).to.have.property('ab');
 			expect(result.a).to.not.have.property('aa');
 			expect(result.a.ab).to.be.deep.equal(obj.a.ab);
+		});
+	});
+
+	describe('when accessing all indices (*)', function() {
+
+		var transform = JSONTransform.JSONTransform;
+		var obj = {
+		    "data": {
+				"SimpleStats": {
+					"paragraphLengthInWords": {
+						"MIDDLE": {
+							"RESULT_ITEMS_COUNT": 0,
+							"RESULT_HITS_COUNT": 0
+						},
+						"ALL": {
+							"RESULT_ITEMS_COUNT": 2700,
+							"RESULT_HITS_COUNT": 272456
+						}
+					},
+					"sentenceLength": {
+						"MIDDLE": {
+							"RESULT_ITEMS_COUNT": 4241,
+							"RESULT_HITS_COUNT": 87332
+						},
+						"ALL": {
+							"RESULT_ITEMS_COUNT": 13039,
+							"RESULT_HITS_COUNT": 272456
+						}
+					},
+					"paragraphLengthInSentences": {
+						"MIDDLE": {
+							"RESULT_ITEMS_COUNT": 0,
+							"RESULT_HITS_COUNT": 0
+						},
+						"ALL": {
+							"RESULT_ITEMS_COUNT": 2700,
+							"RESULT_HITS_COUNT": 13039
+						}
+					}
+				}
+			},
+			"params": {
+				"fileOut.type": "html",
+				"fileOut.name": "uppsala/lolita-en - stats results.html"
+			}
+		};
+
+		it("should get all sub-object: \"$.{data}.SimpleStats[*].ALL\"", function() {
+			var result = transform(obj, "$.{data}.SimpleStats[*].ALL");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('SimpleStats');
+			expect(result.data).to.not.have.property('paragraphLengthInWords');
+			expect(result.data).to.not.have.property('paragraphLengthInSentences');
+			expect(result.data).to.not.have.property('sentenceLength');
+			expect(result.data).to.have.length(3);
+			expect(result.data[0]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data[1]).to.be.deep.equal(obj.data.SimpleStats.sentenceLength.ALL);
+			expect(result.data[2]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.ALL);
+		});
+		it("should get all sub-object (with many *): \"$.{data}.SimpleStats[*][*]\"", function() {
+			var result = transform(obj, "$.{data}.SimpleStats[*][*]");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('SimpleStats');
+			expect(result.data).to.not.have.property('paragraphLengthInWords');
+			expect(result.data).to.not.have.property('paragraphLengthInSentences');
+			expect(result.data).to.not.have.property('sentenceLength');
+			expect(result.data).to.have.length(3);
+			expect(result.data[0]).to.have.length(2);
+			expect(result.data[0][0]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.MIDDLE);
+			expect(result.data[0][1]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data[1][1]).to.be.deep.equal(obj.data.SimpleStats.sentenceLength.ALL);
+			expect(result.data[2][1]).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.ALL);
+		});
+		it("should get all sub-object (with many *) preserved: \"$.{data}.SimpleStats{[*]}.ALL\"", function() {
+			var result = transform(obj, "$.{data}.SimpleStats{[*]}.ALL");
+			console.log("[test] result: %s", JSON.stringify(result));
+			expect(result).to.have.property('data');
+			expect(result).to.not.have.property('params');
+			expect(result.data).to.not.have.property('SimpleStats');
+			expect(result.data).to.have.property('paragraphLengthInWords');
+			expect(result.data).to.have.property('paragraphLengthInSentences');
+			expect(result.data).to.have.property('sentenceLength');
+			expect(result.data.paragraphLengthInWords).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInWords.ALL);
+			expect(result.data.paragraphLengthInSentences).to.be.deep.equal(obj.data.SimpleStats.paragraphLengthInSentences.ALL);
+			expect(result.data.sentenceLength).to.be.deep.equal(obj.data.SimpleStats.sentenceLength.ALL);
 		});
 	});
 

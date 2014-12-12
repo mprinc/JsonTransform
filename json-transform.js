@@ -128,6 +128,7 @@ var CHAR_KEEP_PATH_END = "}";
 var CHAR_QUOTE = ["'", "\""];
 var CHAR_FLAGS_START = "(";
 var CHAR_FLAGS_END = ")";
+var CHAR_ANY = "*";
 
 var CHAR_SPACE = [" ", "\t", "\r", "\n"];
 
@@ -155,6 +156,8 @@ var STATE_KEEP_PATH_LEAVING = 3;
 
 var INDEX_SELECTOR_TYPE_NAME = 0;
 var INDEX_SELECTOR_TYPE_NUMBER = 1;
+var INDEX_SELECTOR_TYPE_ANY = 2;
+
 var specialChars = [CHAR_EXPRESSION_START, CHAR_PROPERTY_NEXT, CHAR_EXPRESSION_NEXT, CHAR_INDEX_START, CHAR_INDEX_END, CHAR_KEEP_PATH_START, 
                     CHAR_KEEP_PATH_END, CHAR_QUOTE[0], CHAR_QUOTE[1], CHAR_FLAGS_START, CHAR_FLAGS_END];
 function parseExpressions(expressionsStr){
@@ -246,6 +249,13 @@ function parseExpressions(expressionsStr){
 				else if(CHAR_INDEX_SEPARATOR == c && currentState.value.length <= 0){
 					parsingError("Comma (index selector separator) cannot be placed before the first selector", expressionTree);
 					break;
+				}else if(CHAR_ANY == c){
+					currentState.$innerStates.processingState = STATE_INDEX_EXPECTING_SELECTOR_SEPARATOR;
+					currentState.value.push({
+						type: INDEX_SELECTOR_TYPE_ANY,
+						value: "*"
+					});
+					// stepBackward(expressionTree);
 				}else if(CHAR_QUOTE.indexOf(c) >= 0){
 					currentState.$innerStates.processingSelector = {
 						type: INDEX_SELECTOR_TYPE_NAME,
@@ -676,23 +686,42 @@ function processExpressionTree(objOriginal, expressionTree, currentState){
 				}else{
 					results = [];
 				}
-				
-				for(var i in currentState.value){
-					var selector = currentState.value[i];
-					var subState = nextStateInExpressionTree(expressionTree, currentState);
-					var res = processExpressionTree(obj[selector.value], expressionTree, subState);
-					if(results){
-						if(expressionTree.$innerStates.flags.flat && res.constructor === Array){
-							for(var i=0; i<res.length; i++){
-								results.push(res[i]);
+
+				if(currentState.value[0].type == INDEX_SELECTOR_TYPE_ANY){
+					for(var i in obj){
+						var subState = nextStateInExpressionTree(expressionTree, currentState);
+						var res = processExpressionTree(obj[i], expressionTree, subState);
+						if(results){
+							if(expressionTree.$innerStates.flags.flat && res.constructor === Array){
+								for(var i=0; i<res.length; i++){
+									results.push(res[i]);
+								}
+							}else{
+								results.push(res);							
 							}
 						}else{
-							results.push(res);							
+							resultsNamed[i] = res;
 						}
-					}else{
-						resultsNamed[selector.value] = res;
+					}
+				}else{
+					for(var i in currentState.value){
+						var selector = currentState.value[i];
+						var subState = nextStateInExpressionTree(expressionTree, currentState);
+						var res = processExpressionTree(obj[selector.value], expressionTree, subState);
+						if(results){
+							if(expressionTree.$innerStates.flags.flat && res.constructor === Array){
+								for(var i=0; i<res.length; i++){
+									results.push(res[i]);
+								}
+							}else{
+								results.push(res);							
+							}
+						}else{
+							resultsNamed[selector.value] = res;
+						}
 					}
 				}
+
 				if(results){
 					if(results.length == 1){
 						obj = results[0];
