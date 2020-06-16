@@ -2,7 +2,7 @@
 
 /* JSONPath 0.8.0 - XPath for JSON
  *
- * Copyright (c) 2014 Sasha Mile Rudan & Marko Vucinic
+ * Copyright (c) 2014-2020 Sasha Mile Rudan & Marko Vucinic
  * Licensed under the MIT (MIT-LICENSE.txt) licence.
  * inspired with: 2007 Stefan Goessner (goessner.net)
  */

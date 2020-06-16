@@ -3,12 +3,16 @@ var JSONTransform = require('../json-transform');
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 
-// testing:
-// cd ~/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/
-// node node_modules/mocha/bin/mocha test/json-transform.tests.js
-// cp /Users/sasha/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/json-transform.js /Users/sasha/Documents/data/development/JsonTransform-web/
-// cp /Users/sasha/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/test/json-transform.tests.js /Users/sasha/Documents/data/development/JsonTransform/test/
-// cd /Users/sasha/Documents/data/development/JsonTransform-web/
+/**
+* testing:
+* ```sh
+* cd ~/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/
+* node node_modules/mocha/bin/mocha test/json-transform.tests.js
+* cp /Users/sasha/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/json-transform.js /Users/sasha/Documents/data/development/JsonTransform-web/
+* cp /Users/sasha/Documents/data/development/Bukvik/project/src/frontend/app/lib/jsonpath/test/json-transform.tests.js /Users/sasha/Documents/data/development/JsonTransform/test/
+* cd /Users/sasha/Documents/data/development/JsonTransform-web/
+* ```
+ */
 describe('JSONTransform', function() {
 
 	describe('when doing empty access', function() {
